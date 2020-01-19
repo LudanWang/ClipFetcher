@@ -24,18 +24,43 @@
 </head>
 
 <body>
-    <form action="javascript:void(0);" onsubmit="loadVideo()">
+    <div class="container">
+        <div style="position: absolute; top: 25px; right: 25px;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+                <div class="toast-header">
+                    <!--
+                                            <img src="..." class="rounded mr-2" alt="...">
+                                            <small>11 mins ago</small>
+                                            -->
+                    <strong class="mr-auto">Clip Fetcher</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    影片分析完成！！
+                </div>
+            </div>
+
+        </div>
+
         <div class="form-group">
             <label for="videoInfo">請輸入你想要分析的VOD ID或VOD網址</label>
             <input id="videoInfo" type="text" class="form-control" aria-describedby="videoHelp"
                 placeholder="VOD ID 或 VOD網址" value="">
             <small id="videoHelp" class="form-text text-muted">請確認VOD ID或VOD網址正確</small>
         </div>
-        <button id="videoInfoBtn" type="submit" class="btn btn-primary">載入</button>
-    </form>
-    <div id="video">
+        <button id="videoInfoBtn" type="button" class="btn btn-primary" onclick="loadVideo()">載入</button>
+        <div id="videoShow" class="embed-responsive embed-responsive-16by9 my-2"></div>
+        <button id="videoStartAnalysisBtn" type="button" class="btn btn-success d-none"
+            onclick="analysisVideo()">開始分析</button>
+        <div id="progressList" class="progress my-2 d-none">
+            <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
 
     </div>
+
 
     <script type="text/javascript">
         function loadVideo() {
@@ -43,13 +68,31 @@
             var output = "";
             vid = vid.substring(vid.length - 9);
             if (parseInt(vid)) {
-                output = '<iframe src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '" height="450" width = "800" ></iframe >';
+                output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
+                $("#videoShow").html(output);
+                $("#videoInfoBtn").text("重新載入");
+                $("#videoStartAnalysisBtn").removeClass("d-none");
             } else {
                 alert("VOD ID或VOD網址輸入錯誤");
             }
-            $("#video").html(output);
-            $("#videoInfoBtn").html("重新載入");
-            return false;
+        }
+
+        function analysisVideo() {
+            let val = 0;
+            $("#progressList").removeClass("d-none");
+            let interval = setInterval(function () {
+                if (val == 100) {
+                    $('.toast').toast('show');
+                    $("#progressList").addClass("d-none");
+                    $("#videoStartAnalysisBtn").addClass("d-none");
+                    clearInterval(interval);
+                } else {
+                    val += 10;
+                }
+                $("#progressBar").css("width", val + "%");
+                $("#progressBar").attr("aria-valuenow", val);
+                $("#progressBar").text(val + "%");
+            }, 500);
         }
     </script>
 </body>
