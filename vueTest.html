@@ -27,15 +27,124 @@
 <body>
 
     <div id="myApp">
-        {{message}}
+        <h3>{{message}}</h3>
+
+        <!-- v-if -->
+        <h3>v-if <span v-if="sel">is True</span></h3>
+
+        <!-- v-for -->
+        <h3>v-for</h3>
+        <ul>
+            <li v-for="tmp in arr1">{{tmp.data}}</li>
+        </ul>
+
+        <!-- v-model -->
+        <h3>v-model : {{v_model_message}}</h3>
+        <input type="text" v-model="v_model_message">
+
+        <!-- v-on -->
+        <h3>v-on : {{v_on_message}}</h3>
+        <button v-on:click="textBtnClick('text1')">text1</button>
+        <button v-on:click="textBtnClick('text2')">text2</button>
+        <button @click="textBtnClick('text3')">text3</button>
+
+        <!-- component v-bind -->
+        <h3>component v-bind</h3>
+        <ul>
+            <data-item v-for="tmp in arr2" v-bind:item="tmp"></data-item>
+        </ul>
+
+        <!-- filters -->
+        <h3>filters</h3>
+        <p>num to percentage : {{num | toPercentage}}</p>
+        <p>v-model message to uppercase: {{v_model_message | toUpperCase}}</p>
+
+        <!-- computed -->
+        <h3>computed</h3>
+        <p>numAdd5 : {{numAdd5}}</p>
+        <p>numMuliply5 : {{numMuliply5}}</p>
+
+        <!-- watch -->
+        <h3>watch</h3>
+        <p>{{numWatch}}</p>
+        <p>{{numWatch_apply}}</p>
+        <button @click="valueBtnClick1(10)">Add10</button>
+
+        <!-- setter -->
+        <h3>setter</h3>
+        <p>num : {{num}}</p>
+        <p>numMuliply5 : {{numMuliply5}}</p>
+        <button @click="valueBtnClick2(10)">Add10</button>
     </div>
     <script type="text/javascript">
+        Vue.component('data-item', {
+            props: ['item'],
+            template: '<li>{{item.data}}</li>',
+        });
+
         var myApp = new Vue({
             el: '#myApp',
             data: {
-                message: 'Hello Vue!!'
-            }
+                message: 'Hello Vue!!',
+                v_model_message: '',
+                v_on_message: '',
+                sel: true,
+                num: 0.3,
+                numWatch: 0,
+                numWatch_apply: 0,
+                arr1: [
+                    { data: 'test1' },
+                    { data: 'test2' },
+                    { data: 'test3' },
+                    { data: 'test4' },
+                ],
+                arr2: [
+                    { data: 'item1' },
+                    { data: 'item2' },
+                    { data: 'item3' },
+                ],
+            },
+            methods: {
+                textBtnClick: function (text) {
+                    this.v_on_message = text;
+                },
+                valueBtnClick1: function (value) {
+                    this.numWatch += value;
+                },
+                valueBtnClick2: function (value) {
+                    this.numMuliply5 += value;
+                },
+            },
+            filters: {
+                toUpperCase: function (text) {
+                    return text.toUpperCase();
+                },
+                toPercentage: function (value) {
+                    return value * 100 + "%";
+                },
+            },
+            computed: {
+                numAdd5: function () {
+                    return Number(this.num) + 5;
+                },
+                numMuliply5: {
+                    get: function () {
+                        return this.num * 5;
+                    },
+                    set: function (value) {
+                        this.num = value / 5;
+                    },
+                },
+            },
+            watch: {
+                numWatch: function (newVal, oldVal) {
+                    console.log(newVal, oldVal);
+                    this.numWatch_apply = Number(this.numWatch) + 10;
+                }
+            },
         });
+
+        myApp.numWatch = 5;
     </script>
 </body>
 
