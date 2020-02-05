@@ -22,6 +22,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <title>Vue Test</title>
+    <style type="text/css">
+        .active {
+            color: red;
+        }
+    </style>
 </head>
 
 <body>
@@ -75,6 +80,12 @@
         <p>num : {{num}}</p>
         <p>numMuliply5 : {{numMuliply5}}</p>
         <button @click="valueBtnClick2(10)">Add10</button>
+
+        <!-- class -->
+        <h3>class</h3>
+        <div v-bind:class="{active:isActive}">class test 1</div>
+        <div :class="{active:isActive}">class test 2</div>
+        <button @click="classBtnClick()">Change class</button>
     </div>
     <script type="text/javascript">
         Vue.component('data-item', {
@@ -89,6 +100,7 @@
                 v_model_message: '',
                 v_on_message: '',
                 sel: true,
+                isActive: true,
                 num: 0.3,
                 numWatch: 0,
                 numWatch_apply: 0,
@@ -113,6 +125,9 @@
                 },
                 valueBtnClick2: function (value) {
                     this.numMuliply5 += value;
+                },
+                classBtnClick: function () {
+                    this.isActive = !this.isActive;
                 },
             },
             filters: {
