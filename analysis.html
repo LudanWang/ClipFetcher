@@ -118,16 +118,20 @@
 
     <script type="text/javascript">
         function loadVideo() {
-            var vid = $("#videoInfo").val();
+            var vidData = $("#videoInfo").val();
             var output = "";
+            vidData = vidData.split("?");
+            vid = vidData[0];
             vid = vid.substring(vid.length - 9);
-            if (parseInt(vid)) {
+            console.log(vid);
+            if (parseInt(vid) && vid <= 999999999) {
                 output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
                 $("#videoShow").html(output);
                 $("#videoInfoBtn").text("重新載入");
                 $("#videoStartAnalysisBtn").removeClass("d-none");
             } else {
                 alert("VOD ID或VOD網址輸入錯誤");
+                location.reload();
             }
         }
 
