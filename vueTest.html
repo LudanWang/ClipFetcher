@@ -21,17 +21,23 @@
         crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
     <title>Vue Test</title>
     <style type="text/css">
         .active {
             color: red;
+        }
+
+        .big {
+            font-weight: bolder;
+            font-size: 2em;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="myApp">
+    <div id="myApp" class="container">
         <h3>{{message}}</h3>
 
         <!-- v-if -->
@@ -85,7 +91,24 @@
         <h3>class</h3>
         <div v-bind:class="{active:isActive}">class test 1</div>
         <div :class="{active:isActive}">class test 2</div>
-        <button @click="classBtnClick()">Change class</button>
+        <button @click="classBtnClick1()">Change class</button>
+        <div :class="myClass">class test 3</div>
+        <button @click="classBtnClick2()">Change class</button>
+
+        <!-- 條件 -->
+        <h3>條件</h3>
+        <span v-if="score < 0">成績未公布</span>
+        <span v-else-if="score < 60">{{score}}分 - 成績不及格</span>
+        <span v-else-if="score < 80">{{score}}分 - Not Bad</span>
+        <span v-else>{{score}}分 - Excellent</span>
+        <br>
+        <button @click="conditionBtnClick1()">Your Score</button>
+
+        <!-- v-show -->
+        <h3>show</h3>
+        <span v-show="isShow">看到你囉！</span>
+        <button @click="showBtnClick1()">check</button>
+
     </div>
     <script type="text/javascript">
         Vue.component('data-item', {
@@ -101,9 +124,11 @@
                 v_on_message: '',
                 sel: true,
                 isActive: true,
+                isShow: false,
                 num: 0.3,
                 numWatch: 0,
                 numWatch_apply: 0,
+                score: -1,
                 arr1: [
                     { data: 'test1' },
                     { data: 'test2' },
@@ -115,6 +140,10 @@
                     { data: 'item2' },
                     { data: 'item3' },
                 ],
+                myClass: {
+                    active: true,
+                    big: true,
+                },
             },
             methods: {
                 textBtnClick: function (text) {
@@ -126,9 +155,19 @@
                 valueBtnClick2: function (value) {
                     this.numMuliply5 += value;
                 },
-                classBtnClick: function () {
+                classBtnClick1: function () {
                     this.isActive = !this.isActive;
                 },
+                classBtnClick2: function () {
+                    this.myClass.active = !this.myClass.active;
+                    this.myClass.big = !this.myClass.big;
+                },
+                conditionBtnClick1: function () {
+                    this.score = Math.round(Math.random() * 100);
+                },
+                showBtnClick1: function () {
+                    this.isShow = !this.isShow;
+                }
             },
             filters: {
                 toUpperCase: function (text) {
