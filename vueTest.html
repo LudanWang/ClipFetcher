@@ -43,8 +43,8 @@
         <!-- v-if -->
         <h3>v-if <span v-if="sel">is True</span></h3>
 
-        <!-- v-for -->
-        <h3>v-for</h3>
+        <!-- v-for_1 -->
+        <h3>v-for_1</h3>
         <ul>
             <li v-for="tmp in arr1">{{tmp.data}}</li>
         </ul>
@@ -53,8 +53,8 @@
         <h3>v-model : {{v_model_message}}</h3>
         <input type="text" v-model="v_model_message">
 
-        <!-- v-on -->
-        <h3>v-on : {{v_on_message}}</h3>
+        <!-- v-on_1 -->
+        <h3>v-on_1 : {{v_on_message}}</h3>
         <button v-on:click="textBtnClick('text1')">text1</button>
         <button v-on:click="textBtnClick('text2')">text2</button>
         <button @click="textBtnClick('text3')">text3</button>
@@ -109,6 +109,27 @@
         <span v-show="isShow">看到你囉！</span>
         <button @click="showBtnClick1()">check</button>
 
+        <!-- v-for_2 -->
+        <h3>v-for_2</h3>
+        <ul>
+            <li v-for="(tmp, index) in arr3">({{index}}) {{tmp.title}} / price : {{tmp.price}} dollar</li>
+        </ul>
+
+        <!-- v-for_3 -->
+        <h3>v-for_3</h3>
+        <ul>
+            <li v-for="(value, key) in datas">{{key}} : {{value}}</li>
+        </ul>
+
+        <!-- v-on_2 -->
+        <h3>v_on_2</h3>
+        <input id="txtName" v-on:keyup="txtKeyup($event)">
+        <button id="btnOK" v-on:click="btnClick($event)">OK</button>
+
+        <!-- v-model_2-->
+        <h3>v-model : {{v_model_message_2}}</h3>
+        <input type="text" v-model="v_model_message_2" placeholder="...">
+
     </div>
     <script type="text/javascript">
         Vue.component('data-item', {
@@ -121,6 +142,7 @@
             data: {
                 message: 'Hello Vue!!',
                 v_model_message: '',
+                v_model_message_2: 'test',
                 v_on_message: '',
                 sel: true,
                 isActive: true,
@@ -140,9 +162,20 @@
                     { data: 'item2' },
                     { data: 'item3' },
                 ],
+                arr3: [
+                    { title: 'title1', price: 200 },
+                    { title: 'title2', price: 300 },
+                    { title: 'title3', price: 400 },
+                ],
                 myClass: {
                     active: true,
                     big: true,
+                },
+                datas: {
+                    data1: 123,
+                    data2: '456',
+                    data3: 678,
+                    data4: '90',
                 },
             },
             methods: {
@@ -167,6 +200,20 @@
                 },
                 showBtnClick1: function () {
                     this.isShow = !this.isShow;
+                },
+                txtKeyup: function (event) {
+                    this.debugLog(event);
+                },
+                btnClick: function (event) {
+                    this.debugLog(event);
+                },
+                debugLog: function (event) {
+                    console.log(
+                        event.srcElement.tagName,
+                        event.srcElement.id,
+                        event.srcElement.innerHTML,
+                        event.key ? event.key : ''
+                    );
                 }
             },
             filters: {
