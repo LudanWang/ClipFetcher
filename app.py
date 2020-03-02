@@ -1,18 +1,26 @@
 import pymongo
 import os
 import json
-from flask import Flask
+import sys
+from flask import Flask, request
 from flask_restful import Api
+from pprint import pprint
 
 app = Flask(__name__)
 api = Api(app)
+sys.path.append("modules")
 
-@app.route("/")
+@app.route('/')
 def home():
     return "Hello world"
 
-
-@app.route("/insert")
+@app.route('/api/vod/create', methods=["GET"])
+def create():
+    if request.method == 'GET' :
+        import vod_module
+        vod_module.create(request.values['vod_id'])
+        return 'OK'
+@app.route('/insert')
 def mongo():
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     db = client.ClipFetcher
