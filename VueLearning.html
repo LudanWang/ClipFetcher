@@ -38,7 +38,7 @@
 <body>
 
     <div id="myApp" class="container">
-        <h3>{{message}}</h3>
+        <h1>{{message}}</h1>
 
         <!-- v-if -->
         <h3>v-if <span v-if="sel">is True</span></h3>
@@ -51,13 +51,15 @@
 
         <!-- v-model -->
         <h3>v-model : {{v_model_message}}</h3>
-        <input type="text" v-model="v_model_message">
+        <div class="form-group">
+            <input type="text" class="form-control" v-model="v_model_message">
+        </div>
 
         <!-- v-on_1 -->
         <h3>v-on_1 : {{v_on_message}}</h3>
-        <button v-on:click="textBtnClick('text1')">text1</button>
-        <button v-on:click="textBtnClick('text2')">text2</button>
-        <button @click="textBtnClick('text3')">text3</button>
+        <button class="btn btn-primary" v-on:click="textBtnClick('text1')">text1</button>
+        <button class="btn btn-primary" v-on:click="textBtnClick('text2')">text2</button>
+        <button class="btn btn-primary" @click="textBtnClick('text3')">text3</button>
 
         <!-- component v-bind -->
         <h3>component v-bind</h3>
@@ -79,21 +81,21 @@
         <h3>watch</h3>
         <p>{{numWatch}}</p>
         <p>{{numWatch_apply}}</p>
-        <button @click="valueBtnClick1(10)">Add10</button>
+        <button class="btn btn-primary" @click="valueBtnClick1(10)">Add10</button>
 
         <!-- setter -->
         <h3>setter</h3>
         <p>num : {{num}}</p>
         <p>numMuliply5 : {{numMuliply5}}</p>
-        <button @click="valueBtnClick2(10)">Add10</button>
+        <button class="btn btn-primary" @click="valueBtnClick2(10)">Add10</button>
 
         <!-- class -->
         <h3>class</h3>
         <div v-bind:class="{active:isActive}">class test 1</div>
         <div :class="{active:isActive}">class test 2</div>
-        <button @click="classBtnClick1()">Change class</button>
+        <button class="btn btn-primary" @click="classBtnClick1()">Change class</button>
         <div :class="myClass">class test 3</div>
-        <button @click="classBtnClick2()">Change class</button>
+        <button class="btn btn-primary" @click="classBtnClick2()">Change class</button>
 
         <!-- 條件 -->
         <h3>條件</h3>
@@ -102,12 +104,12 @@
         <span v-else-if="score < 80">{{score}}分 - Not Bad</span>
         <span v-else>{{score}}分 - Excellent</span>
         <br>
-        <button @click="conditionBtnClick1()">Your Score</button>
+        <button class="btn btn-primary" @click="conditionBtnClick1()">Your Score</button>
 
         <!-- v-show -->
         <h3>show</h3>
         <span v-show="isShow">看到你囉！</span>
-        <button @click="showBtnClick1()">check</button>
+        <button class="btn btn-primary" @click="showBtnClick1()">check</button>
 
         <!-- v-for_2 -->
         <h3>v-for_2</h3>
@@ -123,13 +125,70 @@
 
         <!-- v-on_2 -->
         <h3>v_on_2</h3>
-        <input id="txtName" v-on:keyup="txtKeyup($event)">
-        <button id="btnOK" v-on:click="btnClick($event)">OK</button>
+        <div class="input-group">
+            <input id="txtName" class="form-control" v-on:keyup="txtKeyup($event)">
+            <div class="input-group-append">
+                <button id="btnOK" class="btn btn-primary" v-on:click="btnClick($event)">OK</button>
+            </div>
+        </div>
 
         <!-- v-model_2-->
         <h3>v-model : {{v_model_message_2}}</h3>
-        <input type="text" v-model="v_model_message_2" placeholder="...">
+        <div class="form-group">
+            <input type="text" class="form-control" v-model="v_model_message_2" placeholder="...">
+        </div>
 
+        <!-- v-model_3 -->
+        <h3>v-model checked {{checkedValue}}</h3>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="checkedValue1" value="123" v-model="checkedValue">
+            <label class="form-check-label" for="checkedValue1">123</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="checkedValue2" value="456" v-model="checkedValue">
+            <label class="form-check-label" for="checkedValue2">456</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="checkedValue3" value="789" v-model="checkedValue">
+            <label class="form-check-label" for="checkedValue3">789</label>
+        </div>
+
+        <!-- v-model_4 -->
+        <h3>v-model picked {{pickedValue}}</h3>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="pickedValue1" value="123" v-model="pickedValue">
+            <label class="form-check-label" for="pickedValue1">123</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="pickedValue2" value="456" v-model="pickedValue">
+            <label class="form-check-label" for="pickedValue2">456</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="pickedValue3" value="789" v-model="pickedValue">
+            <label class="form-check-label" for="pickedValue3">789</label>
+        </div>
+
+        <!-- v-model_5-->
+        <h3>v-model select {{selectValue}}, {{selectValues}}</h3>
+        <h6>single value</h6>
+        <select class="custom-select" v-model="selectValue">
+            <option disabled></option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <h6>mutiple values</h6>
+        <select class="custom-select" v-model="selectValues" multiple>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+        </select>
     </div>
     <script type="text/javascript">
         Vue.component('data-item', {
@@ -144,6 +203,10 @@
                 v_model_message: '',
                 v_model_message_2: 'test',
                 v_on_message: '',
+                checkedValue: [],
+                pickedValue: '',
+                selectValue: '',
+                selectValues: [],
                 sel: true,
                 isActive: true,
                 isShow: false,
