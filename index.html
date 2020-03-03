@@ -37,11 +37,9 @@
 
     <div id="myApp">
         <nav class="navbar navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    {{title}}
-                </a>
-            </div>
+            <a class="navbar-brand" href="#">
+                {{title}}
+            </a>
         </nav>
 
         <div class="container">
@@ -64,7 +62,7 @@
 
             </div>
 
-            <section>
+            <section class="my-3">
                 <label for="videoInfo">請輸入你想要分析的 Vod Id 或 Vod 網址</label>
                 <div class="input-group">
                     <input id="videoInfo" type="text" class="form-control" aria-describedby="videoData"
@@ -85,10 +83,12 @@
 
             <button id="videoStartAnalysisBtn" type="button" class="btn btn-success" v-show="vodAnalysisBtnShow"
                 onclick="analysisVideo()">開始分析</button>
-            <div id="progressList" class="progress my-2 d-none">
+
+            <div id="progressList" class="progress my-2" v-show="progressList">
                 <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%;"
                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
+
             <div id="videoResult" class="card my-2" v-show="videoResult">
                 <h5 class="card-header">分析結果精華影片</h5>
                 <div class="card-body">
@@ -152,6 +152,7 @@
                 vodData: '',
                 vodShow: false,
                 vodAnalysisBtnShow: false,
+                progressList: false,
                 videoResult: false,
                 stars: [
                     {}
@@ -202,11 +203,11 @@
         function analysisVideo() {
             let val = 0;
             myApp.vodAnalysisBtnShow = false;
-            $("#progressList").removeClass("d-none");
+            myApp.progressList = true;
             let interval = setInterval(function () {
                 if (val == 100) {
                     $('.toast').toast('show');
-                    $("#progressList").addClass("d-none");
+                    myApp.progressList = false;
                     myApp.videoResult = true;
                     clearInterval(interval);
                 } else {
