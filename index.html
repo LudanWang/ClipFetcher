@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/9b78fa3fff.js" crossorigin="anonymous"></script>
+
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -20,13 +23,201 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- main.js 
+    <script src="main.js"></script>
+    -->
+
     <title>Clip Fetcher</title>
 </head>
 
 <body>
-    <h1>Hello, world!</h1>
 
+    <div id="myApp">
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    {{title}}
+                </a>
+            </div>
+        </nav>
 
+        <div class="container">
+            <div style="position: absolute; top: 25px; right: 25px;">
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+                    <div class="toast-header">
+                        <!--
+                                                    <img src="..." class="rounded mr-2" alt="...">
+                                                    <small>11 mins ago</small>
+                                                    -->
+                        <strong class="mr-auto">{{title}}</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        影片分析完成！！
+                    </div>
+                </div>
+
+            </div>
+
+            <section>
+                <label for="videoInfo">請輸入你想要分析的 Vod Id 或 Vod 網址</label>
+                <div class="input-group">
+                    <input id="videoInfo" type="text" class="form-control" aria-describedby="videoData"
+                        placeholder="VodId 或 Vod 網址" v-model="vodData">
+                    <div class="input-group-append">
+                        <button id="videoInfoBtn" type="button" class="btn btn-primary"
+                            onclick="loadVideo()">{{vodLoadBtn}}</button>
+                    </div>
+                </div>
+                <small id="videoData" class="form-text text-muted">請確認 Vod Id 或 Vod 網址正確</small>
+            </section>
+
+            <div class="row justify-content-center" v-show="vod">
+                <div class="col-12 col-md-8">
+                    <div id="videoShow" class="embed-responsive embed-responsive-16by9 my-2"></div>
+                </div>
+            </div>
+
+            <button id="videoStartAnalysisBtn" type="button" class="btn btn-success" v-show="vodAnalysisBtnShow"
+                onclick="analysisVideo()">開始分析</button>
+            <div id="progressList" class="progress my-2 d-none">
+                <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%;"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div id="videoResult" class="card my-2" v-show="videoResult">
+                <h5 class="card-header">分析結果精華影片</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"
+                                    src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <span>實況主：</span><br>
+                            <span>標題：</span><br>
+                            <span>遊戲分類：</span><br>
+                        </div>
+                        <div class="col-12 col-md-5 align-self-end">
+                            <button type="button" class="btn btn-outline-secondary my-1">影片不精準</button>
+                            <button type="button" class="btn btn-outline-secondary my-1">影片長度過長</button>
+                            <button type="button" class="btn btn-outline-secondary my-1">影片分析太久</button>
+                            <button type="button" class="btn btn-outline-secondary my-1">其他</button>
+                            <br>
+                            <div class="float-right">
+                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                    @touchend="mouseOutRrating"></i>
+                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                    @touchend="mouseOutRrating"></i>
+                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                    @touchend="mouseOutRrating"></i>
+                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                    @touchend="mouseOutRrating"></i>
+                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                    @touchend="mouseOutRrating"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <div id="videoList my-2">
+                <h3>最新精華影片</h3>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var myApp = new Vue({
+            el: '#myApp',
+            data: {
+                title: 'Clip Fetcher',
+                vodLoadBtn: '載入',
+                vodAnalysisBtn: '開始分析',
+                vodData: '',
+                vodShow: false,
+                vodAnalysisBtnShow: false,
+                videoResult: false,
+                stars: [
+                    {}
+                ],
+                star: {
+                    far: true,
+                    fas: false,
+                }
+            },
+            methods: {
+                mouseOverRrating: function () {
+                    this.star.far = !this.star.far;
+                    this.star.fas = !this.star.fas;
+                },
+                mouseOutRrating: function () {
+                    this.star.far = !this.star.far;
+                    this.star.fas = !this.star.fas;
+                },
+                rating: function () {
+
+                }
+            },
+        });
+
+        function loadVideo() {
+            var vidData = myApp.vodData;
+            var output = "";
+            vidData = vidData.split("?");
+            vid = vidData[0];
+            vid = vid.substring(vid.length - 9);
+            console.log(vid);
+            if (parseInt(vid) && vid <= 999999999) {
+                output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
+                $("#videoShow").html(output);
+                myApp.vodLoadBtn = '重新載入';
+                myApp.videoResult = false;
+                myApp.vod = true;
+                myApp.vodAnalysisBtnShow = true;
+            } else if (vid === '') {
+                alert("VOD ID或VOD網址未輸入");
+                location.reload();
+            } else {
+                alert("VOD ID或VOD網址輸入錯誤");
+                location.reload();
+            }
+        }
+
+        function analysisVideo() {
+            let val = 0;
+            myApp.vodAnalysisBtnShow = false;
+            $("#progressList").removeClass("d-none");
+            let interval = setInterval(function () {
+                if (val == 100) {
+                    $('.toast').toast('show');
+                    $("#progressList").addClass("d-none");
+                    myApp.videoResult = true;
+                    clearInterval(interval);
+                } else {
+                    val += 10;
+                }
+                $("#progressBar").css("width", val + "%");
+                $("#progressBar").attr("aria-valuenow", val);
+                $("#progressBar").text(val + "%");
+            }, 500);
+        }
+    </script>
 </body>
 
 </html>
