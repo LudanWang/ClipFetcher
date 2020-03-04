@@ -22,7 +22,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-    <title>Vue Test</title>
+    <title>Vue Learning</title>
     <style type="text/css">
         .active {
             color: red;
@@ -189,6 +189,22 @@
             <option>8</option>
             <option>9</option>
         </select>
+
+        <!-- form input modifiers -->
+        <h3>form input modifiers</h3>
+        <div class="form-group">
+            <input type="text" class="form-control" v-model.lazy="v_model_lazy">
+        </div>
+        <p>lazy: {{v_model_lazy}}</p>
+        <div class="form-group">
+            <input type="number" class="form-control" v-model.number="v_model_number">
+        </div>
+        <p>number: {{v_model_number}}</p>
+        <div class="form-group">
+            <input type="text" class="form-control" v-model="v_model_trim">
+        </div>
+        <p>trim: {{v_model_trim}}</p>
+
     </div>
     <script type="text/javascript">
         Vue.component('data-item', {
@@ -203,6 +219,9 @@
                 v_model_message: '',
                 v_model_message_2: 'test',
                 v_on_message: '',
+                v_model_lazy: '',
+                v_model_number: '',
+                v_model_trim: '',
                 checkedValue: [],
                 pickedValue: '',
                 selectValue: '',
