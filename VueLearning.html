@@ -64,7 +64,7 @@
         <!-- component v-bind -->
         <h3>component v-bind</h3>
         <ul>
-            <data-item v-for="tmp in arr2" v-bind:item="tmp"></data-item>
+            <data-item v-for="tmp in arr2" v-bind:item="tmp" :key="tmp.id"></data-item>
         </ul>
 
         <!-- filters -->
@@ -170,14 +170,14 @@
 
         <!-- v-model_5-->
         <h3>v-model select {{selectValue}}, {{selectValues}}</h3>
-        <h6>single value</h6>
+        <h5>single value</h5>
         <select class="custom-select" v-model="selectValue">
             <option disabled></option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
         </select>
-        <h6>mutiple values</h6>
+        <h5>mutiple values</h5>
         <select class="custom-select" v-model="selectValues" multiple>
             <option>1</option>
             <option>2</option>
@@ -205,11 +205,207 @@
         </div>
         <p>trim: {{v_model_trim}}</p>
 
+        <!-- Vue component-->
+        <h3>Vue component</h3>
+        <today-weather></today-weather>
+        <my-weather></my-weather>
+        <table class="table">
+            <thead>
+                <tr is="my-row0"></tr>
+                <!--
+                <my-row0></my-row0>
+                -->
+            </thead>
+            <tbody>
+                <tr is="my-row1"></tr>
+                <tr is="my-row2"></tr>
+                <tr is="my-row3"></tr>
+                <!--
+                <my-row1></my-row1>
+                <my-row2></my-row2>
+                <my-row3></my-row3>
+                -->
+            </tbody>
+        </table>
+        <p>
+            今天的天氣是<today-weather-data></today-weather-data>
+        </p>
+        <h5>Component &lt;test-result&gt;</h5>
+        <test-result :score="50"></test-result>
+        <test-result :score="65"></test-result>
+        <test-result :score="95"></test-result>
+        <div class="form-group">
+            <input type="text" class="form-control" v-model="v_component_message">
+        </div>
+        <say-hello :name="v_component_message"></say-hello>
+        <member-info name="TsuNiWan" :age="20" :detail="{address: 'Earth', language: 'English'}"></member-info>
+        <h5>Add Method</h5>
+        <add-method :first="15" :second="3" v-on:add_event="getAddResult"></add-method>
+        <p>{{addResult}}</p>
+        <h5>Slot</h5>
+        <say-to name="蔣西南">又是你！</say-to>
+        <say-to name="陳小馬">看到你囉！</say-to>
+        <h5>multSlot</h5>
+        <group-talk name="王拒捕">
+            <small slot="first">蔣西南</small>
+            <span slot="second">陳小馬</span>
+            <strong slot="third">林小示</strong>
+        </group-talk>
     </div>
     <script type="text/javascript">
+        var weatherComponent = {
+            template: '<p>今天下雨，隨它去吧！</p>'
+        };
+
         Vue.component('data-item', {
             props: ['item'],
             template: '<li>{{item.data}}</li>',
+        });
+
+        Vue.component('today-weather', {
+            template: '<p>今天下雨，出不去拉！</p>'
+        });
+
+        Vue.component('my-row0', {
+            template: `
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+            `
+        });
+
+        Vue.component('my-row1', {
+            template: `
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr >
+            `
+        });
+
+        Vue.component('my-row2', {
+            template: `
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            `
+        });
+
+        Vue.component('my-row3', {
+            template: `
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+            `
+        });
+
+        Vue.component('today-weather-data', {
+            data: function () {
+                return {
+                    todayWeather: '雨加雪'
+                };
+            },
+            template: '<strong>{{todayWeather}}</strong>'
+        });
+
+        Vue.component('test-result', {
+            props: ['score'],
+            computed: {
+                testResult: function () {
+                    let result = '';
+                    if (this.score < 60) {
+                        result = '不及格';
+                    } else if (this.score < 80) {
+                        result = '普通';
+                    } else if (this.score <= 100) {
+                        result = '優等';
+                    }
+                    return result;
+                }
+            },
+            template: '<p><strong>{{score}}</strong>分：{{testResult}}</p>'
+        });
+
+        Vue.component('say-hello', {
+            props: ['name'],
+            template: '<p>Hello! <strong>{{name}}</strong></p>',
+        });
+
+        Vue.component('member-info', {
+            props: {
+                name: {
+                    type: String,
+                    required: true,
+                },
+                age: {
+                    type: Number,
+                    validator: function (value) {
+                        return value >= 0 && value <= 130;
+                    }
+                },
+                detail: {
+                    type: Object,
+                    default: function () {
+                        return {
+                            address: 'TW',
+                            language: 'Chinese',
+                        };
+                    }
+                }
+            },
+            template: `
+            <div>
+            <p>名稱：{{this.name}}</p>
+            <p>年齡：{{this.age}}</p>
+            <p>國家：{{this.detail.address}}</p>
+            <p>語言：{{this.detail.language}}</p>
+            </div>
+            `
+            ,
+        });
+
+        Vue.component('add-method', {
+            props: ['first', 'second'],
+            methods: {
+                add: function () {
+                    let answer = 0;
+                    answer = this.first + this.second;
+                    this.$emit('add_event', {
+                        result: answer
+                    });
+                }
+            },
+            template: '<button class="btn btn-primary" @click="add">Add!</button>',
+        });
+
+        Vue.component('say-to', {
+            props: ['name'],
+            template: '<p><strong>{{name}}</strong><slot></slot></p>'
+
+        });
+
+        Vue.component('group-talk', {
+            props: ['name'],
+            template: `
+            <p>
+            <strong>{{name}}</strong>,
+            <slot name="first"></slot>,
+            <slot name="second"></slot>,
+            <slot name="third"></slot>.
+            </p>
+            `,
+
         });
 
         var myApp = new Vue({
@@ -222,6 +418,7 @@
                 v_model_lazy: '',
                 v_model_number: '',
                 v_model_trim: '',
+                v_component_message: 'TsuNiWan',
                 checkedValue: [],
                 pickedValue: '',
                 selectValue: '',
@@ -232,6 +429,7 @@
                 num: 0.3,
                 numWatch: 0,
                 numWatch_apply: 0,
+                addResult: 0,
                 score: -1,
                 arr1: [
                     { data: 'test1' },
@@ -296,6 +494,9 @@
                         event.srcElement.innerHTML,
                         event.key ? event.key : ''
                     );
+                },
+                getAddResult: function (func) {
+                    this.addResult = func.result;
                 }
             },
             filters: {
@@ -325,6 +526,9 @@
                     this.numWatch_apply = Number(this.numWatch) + 10;
                 }
             },
+            components: {
+                'my-weather': weatherComponent,
+            }
         });
 
         myApp.numWatch = 5;
