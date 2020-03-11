@@ -13,6 +13,9 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/9b78fa3fff.js" crossorigin="anonymous"></script>
 
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC|Noto+Serif+TC&display=swap" rel="stylesheet">
+
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -29,6 +32,21 @@
     <!-- main.js 
     <script src="main.js"></script>
     -->
+    <style type="text/css">
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .4s ease;
+        }
+
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
 
     <title>Clip Fetcher</title>
 </head>
@@ -43,44 +61,77 @@
         </nav>
 
         <div class="container">
-            <div style="position: absolute; top: 25px; right: 25px;">
-                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-                    <div class="toast-header">
-                        <!--
-                                                    <img src="..." class="rounded mr-2" alt="...">
-                                                    <small>11 mins ago</small>
-                                                    -->
-                        <strong class="mr-auto">{{title}}</strong>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="toast-body">
-                        影片分析完成！！
+
+            <div id="analysisFinish" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
+                aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{title}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>影片分析完成！！</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+
+            <div class="my-3 p-1">
+                <nav class="nav nav-pills nav-justified">
+                    <a class="nav-item nav-link" :class="{active:inputBar}" @click="changeBar('create')">精華生成</a>
+                    <a class="nav-item nav-link" :class="{active:!inputBar}" @click="changeBar('search')">精華搜尋</a>
+                </nav>
+
+                <transition name="fade" mode="out-in">
+                    <!-- 精華生成輸入列 -->
+                    <section class="my-3" v-if="inputBar" key="create">
+                        <form @submit.prevent="loadVideo">
+                            <label for="vodData">請輸入你想要分析的 Vod Id 或 Vod 網址</label>
+                            <div class="input-group">
+                                <input id="vodData" type="text" class="form-control" aria-describedby="videoData"
+                                    placeholder="VodId 或 Vod 網址" v-model="vodData">
+                                <div class="input-group-append">
+                                    <button id="vodLoadBtn" type="submit"
+                                        class="btn btn-primary">{{vodLoadBtn}}</button>
+                                </div>
+                            </div>
+                            <small id="videoData" class="form-text text-muted">請確認 Vod Id 或 Vod 網址正確</small>
+                        </form>
+                    </section>
+
+                    <!-- 精華搜尋輸入列 -->
+                    <section class="my-3" v-else-if="!inputBar" key="search">
+                        <form @submit.prevent="searchVideo">
+                            <label for="videoSearch">請輸入你想要尋找的 Vod 或 精華影片 Id</label>
+                            <div class="input-group">
+                                <input id="videoSearch" type="text" class="form-control"
+                                    aria-describedby="videoSearchText" placeholder="Vod 或 精華影片 Id"
+                                    v-model="videoSearch">
+                                <div class="input-group-append">
+                                    <button id="vodSearchBtn" type="submit"
+                                        class="btn btn-primary">{{vodSearchBtn}}</button>
+                                </div>
+                            </div>
+                            <small id="videoSearchText" class="form-text text-muted">請確認 Vod 或 精華影片 Id正確</small>
+                        </form>
+                    </section>
+                </transition>
 
             </div>
 
-            <section class="my-3">
-                <label for="videoInfo">請輸入你想要分析的 Vod Id 或 Vod 網址</label>
-                <div class="input-group">
-                    <input id="videoInfo" type="text" class="form-control" aria-describedby="videoData"
-                        placeholder="VodId 或 Vod 網址" @submit="loadVideo" v-model="vodData">
-                    <div class="input-group-append">
-                        <button id="videoInfoBtn" type="button" class="btn btn-primary"
-                            @click="loadVideo">{{vodLoadBtn}}</button>
-                    </div>
-                </div>
-                <small id="videoData" class="form-text text-muted">請確認 Vod Id 或 Vod 網址正確</small>
-            </section>
-
-            <div class="row justify-content-center" v-show="vod">
+            <!-- 影片紀錄檔顯示 -->
+            <div class="row justify-content-center" v-show="vodShow">
                 <div class="col-12 col-md-8">
                     <div id="videoShow" class="embed-responsive embed-responsive-16by9 my-2"></div>
                 </div>
             </div>
 
+
+            <!-- 分析 -->
             <button id="videoStartAnalysisBtn" type="button" class="btn btn-success" v-show="vodAnalysisBtnShow"
                 @click="analysisVideo">開始分析</button>
 
@@ -89,6 +140,7 @@
                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
+            <!-- 分析結果顯示 -->
             <div id="videoResult" class="card my-2" v-show="videoResult">
                 <h5 class="card-header">分析結果精華影片</h5>
                 <div class="card-body">
@@ -133,12 +185,63 @@
             </div>
             <br>
             <hr>
-            <br>
+            <h3 class="text-center my-2">最新精華影片</h3>
+
+            <!-- 精華檢視顯示 -->
             <div id="videoList my-2">
-                <h3>最新精華影片</h3>
+
+                <!-- 精華影片顯示 -->
+                <div class="card my-2">
+                    <h5 class="card-header">hilight video id or title</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item"
+                                        src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <span>實況主：</span><br>
+                                <span>標題：</span><br>
+                                <span>遊戲分類：</span><br>
+                            </div>
+                            <div class="col-12 col-md-5 align-self-end">
+                                <button type="button" class="btn btn-outline-secondary my-1">影片不精準</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">影片長度過長</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">影片分析太久</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">其他</button>
+                                <br>
+                                <div class="float-right">
+                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                        @touchend="mouseOutRrating"></i>
+                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                        @touchend="mouseOutRrating"></i>
+                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                        @touchend="mouseOutRrating"></i>
+                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                        @touchend="mouseOutRrating"></i>
+                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
+                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
+                                        @touchend="mouseOutRrating"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
+
+        <footer class="mt-3">
+            <div class="container">
+                <a class="nav-link float-right" href="mailto:">聯絡我們</a>
+            </div>
+        </footer>
     </div>
 
     <script type="text/javascript">
@@ -146,17 +249,21 @@
         var myApp = new Vue({
             el: '#myApp',
             data: {
-                title: 'Clip Fetcher',
+                //顯示名稱
+                title: 'Highlight Clip Fetcher',
                 vodLoadBtn: '載入',
                 vodAnalysisBtn: '開始分析',
+                vodSearchBtn: '搜尋',
                 vodData: '',
+                vidId: '',
+                videoSearch: '',
+                //顯示控制
                 vodShow: false,
                 vodAnalysisBtnShow: false,
                 progressList: false,
                 videoResult: false,
-                stars: [
-                    {}
-                ],
+                inputBar: true,
+                active: true,
                 star: {
                     far: true,
                     fas: false,
@@ -175,10 +282,10 @@
 
                 },
                 loadVideo: function () {
-                    var vidData = this.vodData;
-                    var output = "";
-                    vidData = vidData.split("?");
-                    vid = vidData[0];
+                    let vodData = this.vodData;
+                    let output = "";
+                    vodData = vodData.split("?");
+                    vid = vodData[0];
                     vid = vid.substring(vid.length - 9);
                     console.log(vid);
                     if (parseInt(vid) && vid <= 999999999) {
@@ -186,7 +293,7 @@
                         $("#videoShow").html(output);
                         this.vodLoadBtn = '重新載入';
                         this.videoResult = false;
-                        this.vod = true;
+                        this.vodShow = true;
                         this.vodAnalysisBtnShow = true;
                     } else if (vid === '') {
                         alert("VOD ID或VOD網址未輸入");
@@ -198,13 +305,14 @@
                 },
                 analysisVideo: function () {
                     let val = 0;
+                    let call = this;
                     this.vodAnalysisBtnShow = false;
                     this.progressList = true;
                     let interval = setInterval(function () {
-                        if (val == 100) {
-                            $('.toast').toast('show');
-                            this.progressList = false;
-                            this.videoResult = true;
+                        if (val === 100) {
+                            $('#analysisFinish').modal('show');
+                            call.progressList = false;
+                            call.videoResult = true;
                             clearInterval(interval);
                         } else {
                             val += 10;
@@ -213,7 +321,15 @@
                         $("#progressBar").attr("aria-valuenow", val);
                         $("#progressBar").text(val + "%");
                     }, 500);
-                }
+                },
+                searchVideo: function () {
+                    let video = this.searchVideo;
+
+                },
+                changeBar: function (type) {
+                    if ((type === 'create' && !this.inputBar) || (type === 'search' && this.inputBar))
+                        this.inputBar = !this.inputBar;
+                },
             },
         });
     </script>
