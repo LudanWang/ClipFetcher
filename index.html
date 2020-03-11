@@ -66,10 +66,10 @@
                 <label for="videoInfo">請輸入你想要分析的 Vod Id 或 Vod 網址</label>
                 <div class="input-group">
                     <input id="videoInfo" type="text" class="form-control" aria-describedby="videoData"
-                        placeholder="VodId 或 Vod 網址" v-model="vodData">
+                        placeholder="VodId 或 Vod 網址" @submit="loadVideo" v-model="vodData">
                     <div class="input-group-append">
                         <button id="videoInfoBtn" type="button" class="btn btn-primary"
-                            onclick="loadVideo()">{{vodLoadBtn}}</button>
+                            @click="loadVideo">{{vodLoadBtn}}</button>
                     </div>
                 </div>
                 <small id="videoData" class="form-text text-muted">請確認 Vod Id 或 Vod 網址正確</small>
@@ -82,7 +82,7 @@
             </div>
 
             <button id="videoStartAnalysisBtn" type="button" class="btn btn-success" v-show="vodAnalysisBtnShow"
-                onclick="analysisVideo()">開始分析</button>
+                @click="analysisVideo">開始分析</button>
 
             <div id="progressList" class="progress my-2" v-show="progressList">
                 <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%;"
@@ -173,51 +173,49 @@
                 },
                 rating: function () {
 
+                },
+                loadVideo: function () {
+                    var vidData = this.vodData;
+                    var output = "";
+                    vidData = vidData.split("?");
+                    vid = vidData[0];
+                    vid = vid.substring(vid.length - 9);
+                    console.log(vid);
+                    if (parseInt(vid) && vid <= 999999999) {
+                        output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
+                        $("#videoShow").html(output);
+                        this.vodLoadBtn = '重新載入';
+                        this.videoResult = false;
+                        this.vod = true;
+                        this.vodAnalysisBtnShow = true;
+                    } else if (vid === '') {
+                        alert("VOD ID或VOD網址未輸入");
+                        location.reload();
+                    } else {
+                        alert("VOD ID或VOD網址輸入錯誤");
+                        location.reload();
+                    }
+                },
+                analysisVideo: function () {
+                    let val = 0;
+                    this.vodAnalysisBtnShow = false;
+                    this.progressList = true;
+                    let interval = setInterval(function () {
+                        if (val == 100) {
+                            $('.toast').toast('show');
+                            this.progressList = false;
+                            this.videoResult = true;
+                            clearInterval(interval);
+                        } else {
+                            val += 10;
+                        }
+                        $("#progressBar").css("width", val + "%");
+                        $("#progressBar").attr("aria-valuenow", val);
+                        $("#progressBar").text(val + "%");
+                    }, 500);
                 }
             },
         });
-
-        function loadVideo() {
-            var vidData = myApp.vodData;
-            var output = "";
-            vidData = vidData.split("?");
-            vid = vidData[0];
-            vid = vid.substring(vid.length - 9);
-            console.log(vid);
-            if (parseInt(vid) && vid <= 999999999) {
-                output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
-                $("#videoShow").html(output);
-                myApp.vodLoadBtn = '重新載入';
-                myApp.videoResult = false;
-                myApp.vod = true;
-                myApp.vodAnalysisBtnShow = true;
-            } else if (vid === '') {
-                alert("VOD ID或VOD網址未輸入");
-                location.reload();
-            } else {
-                alert("VOD ID或VOD網址輸入錯誤");
-                location.reload();
-            }
-        }
-
-        function analysisVideo() {
-            let val = 0;
-            myApp.vodAnalysisBtnShow = false;
-            myApp.progressList = true;
-            let interval = setInterval(function () {
-                if (val == 100) {
-                    $('.toast').toast('show');
-                    myApp.progressList = false;
-                    myApp.videoResult = true;
-                    clearInterval(interval);
-                } else {
-                    val += 10;
-                }
-                $("#progressBar").css("width", val + "%");
-                $("#progressBar").attr("aria-valuenow", val);
-                $("#progressBar").text(val + "%");
-            }, 500);
-        }
     </script>
 </body>
 
