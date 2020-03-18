@@ -12,4 +12,10 @@ def insert_vod(object):
         'game': object['game'],
         'comment': object['comment']
     }
-    return collection.insert(data)
+    collection.insert(data)
+    test = collection.find_one({"vod_id": object['vod_id']}, {"channel_id": 1})
+    return test['channel_id']
+
+def index(data):
+    collection = db.Vod
+    return collection.find()

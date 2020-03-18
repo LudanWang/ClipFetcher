@@ -2,9 +2,9 @@ import pymongo
 import os
 import json
 import sys
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api
-from pprint import pprint
+from bson.json_util import dumps
 
 app = Flask(__name__)
 api = Api(app)
@@ -14,12 +14,18 @@ sys.path.append("modules")
 def home():
     return "Hello world"
 
-@app.route('/api/vod/create', methods=["GET"])
+@app.route('/api/vod/create', methods=["POST"])
 def create():
+    if request.method == 'POST' :
+        import vod_module
+        data = vod_module.create(request.values['vod_id'])
+        return jsonify(data)
+@app.route('/api/vod', methods=["GET"])
+def index():
     if request.method == 'GET' :
         import vod_module
-        vod_module.create(request.values['vod_id'])
-        return 'OK'
+        data = vod_module.index(request.values['highlight_id'])
+        return dumps(data)
 @app.route('/insert')
 def mongo():
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])

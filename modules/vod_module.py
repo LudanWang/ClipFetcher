@@ -10,3 +10,6 @@ def create(vod_id):
 
     }
     return mongo_module.insert_vod(data)
+
+def index(highlight_id):
+    return mongo_module.index(highlight_id)
