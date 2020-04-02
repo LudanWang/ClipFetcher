@@ -113,7 +113,7 @@
                                     v-model="videoSearch">
                                 <div class="input-group-append">
                                     <button id="vodSearchBtn" type="submit"
-                                        class="btn btn-primary">{{vodSearchBtn}}</button>
+                                        class="btn btn-primary">{{ vodSearchBtn }}</button>
                                 </div>
                             </div>
                             <small id="videoSearchText" class="form-text text-muted">請確認 Vod 或 精華影片 Id正確</small>
@@ -130,10 +130,46 @@
                 </div>
             </div>
 
+            <!-- 精華影片搜尋顯示 -->
+            <div v-show="highlightShow">
+                <div v-if="exist" class="card my-2">
+                    <h5 class="card-header">精華搜尋影片</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <div id="highlightVideoShow" class="embed-responsive embed-responsive-16by9"></div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <span>實況主：</span><br>
+                                <span>標題：</span><br>
+                                <span>遊戲分類：</span><br>
+                            </div>
+                            <div class="col-12 col-md-5 align-self-end">
+                                <button type="button" class="btn btn-outline-secondary my-1">影片不精準</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">影片長度過長</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">影片分析太久</button>
+                                <button type="button" class="btn btn-outline-secondary my-1">其他</button>
+                                <br>
+                                <div class="float-right">
+                                    <!-- Rating -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="alert alert-danger" role="alert">
+                    <p class="text-center my-2 py-2"><span>很抱歉！您搜尋的精華影片不存在</span></p>
+                </div>
+            </div>
+
 
             <!-- 分析 -->
-            <button id="videoStartAnalysisBtn" type="button" class="btn btn-success" v-show="vodAnalysisBtnShow"
-                @click="analysisVideo">開始分析</button>
+            <div class="row justify-content-center my-2" v-show="vodAnalysisBtnShow">
+                <div class="col-10 col-md-6">
+                    <button id="videoStartAnalysisBtn" type="button" class="btn btn-success btn-lg btn-block"
+                        @click="analysisVideo">開始分析</button>
+                </div>
+            </div>
 
             <div id="progressList" class="progress my-2" v-show="progressList">
                 <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 0%;"
@@ -163,21 +199,7 @@
                             <button type="button" class="btn btn-outline-secondary my-1">其他</button>
                             <br>
                             <div class="float-right">
-                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                    @touchend="mouseOutRrating"></i>
-                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                    @touchend="mouseOutRrating"></i>
-                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                    @touchend="mouseOutRrating"></i>
-                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                    @touchend="mouseOutRrating"></i>
-                                <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                    @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                    @touchend="mouseOutRrating"></i>
+                                <!-- Rating -->
                             </div>
                         </div>
                     </div>
@@ -192,7 +214,7 @@
 
                 <!-- 精華影片顯示 -->
                 <div class="card my-2">
-                    <h5 class="card-header">hilight video id or title</h5>
+                    <h5 class="card-header">highlight video id or title</h5>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 col-md-4">
@@ -213,21 +235,16 @@
                                 <button type="button" class="btn btn-outline-secondary my-1">其他</button>
                                 <br>
                                 <div class="float-right">
-                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                        @touchend="mouseOutRrating"></i>
-                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                        @touchend="mouseOutRrating"></i>
-                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                        @touchend="mouseOutRrating"></i>
-                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                        @touchend="mouseOutRrating"></i>
-                                    <i :class="star" class="text-warning fa-star" @mouseover="mouseOverRrating"
-                                        @touchstart="mouseOverRrating" @mouseout="mouseOutRrating"
-                                        @touchend="mouseOutRrating"></i>
+                                    <template v-for="index in 5">
+                                        <i v-if="index <= starRating" class="text-warning fas fa-star"
+                                            @click="clickRating(index)" @mouseover="mouseOverRrating(index)"
+                                            @touchstart="mouseOverRrating(index)" @mouseout="mouseOutRrating"
+                                            @touchend="mouseOutRrating"></i>
+                                        <i v-else class="text-warning far fa-star" @click="clickRating(index)"
+                                            @mouseover="mouseOverRrating(index)" @touchstart="mouseOverRrating(index)"
+                                            @mouseout="mouseOutRrating" @touchend="mouseOutRrating"></i>
+                                    </template>
+                                    {{ starRating }}
                                 </div>
                             </div>
                         </div>
@@ -257,6 +274,9 @@
                 vodData: '',
                 vidId: '',
                 videoSearch: '',
+                starRating: 0,
+                temp_starRating: 0,
+                isRating: false,
                 //顯示控制
                 vodShow: false,
                 vodAnalysisBtnShow: false,
@@ -264,28 +284,28 @@
                 videoResult: false,
                 inputBar: true,
                 active: true,
-                star: {
-                    far: true,
-                    fas: false,
-                }
+                highlightShow: false,
+                exist: true,
             },
             methods: {
-                mouseOverRrating: function () {
-                    this.star.far = !this.star.far;
-                    this.star.fas = !this.star.fas;
+                mouseOverRrating: function (val) {
+                    this.temp_starRating = this.starRating
+                    this.starRating = val;
                 },
                 mouseOutRrating: function () {
-                    this.star.far = !this.star.far;
-                    this.star.fas = !this.star.fas;
+                    if (!this.isRating) this.starRating = 0;
+                    else this.starRating = this.temp_starRating;
+                    this.temp_starRating = 0;
                 },
-                rating: function () {
-
+                clickRating: function (val) {
+                    this.starRating = this.temp_starRating = val;
+                    this.isRating = true;
                 },
                 loadVideo: function () {
                     let vodData = this.vodData;
                     let output = "";
                     vodData = vodData.split("?");
-                    vid = vodData[0];
+                    let vid = vodData[0];
                     vid = vid.substring(vid.length - 9);
                     console.log(vid);
                     if (parseInt(vid) && vid <= 999999999) {
@@ -323,8 +343,24 @@
                     }, 500);
                 },
                 searchVideo: function () {
-                    let video = this.searchVideo;
-
+                    let video = this.videoSearch;
+                    let output = "";
+                    video = video.split("?");
+                    let vid = video[0];
+                    vid = vid.substring(vid.length - 9);
+                    console.log(vid);
+                    if (parseInt(vid) && vid <= 999999999) {
+                        output = '<iframe id="video" class="embed-responsive-item" src="https://player.twitch.tv/?autoplay=false&video=v' + vid + '"></iframe >';
+                        $("#highlightVideoShow").html(output);
+                        this.highlightShow = true;
+                        //this.exist = !this.exist;
+                    } else if (vid === '') {
+                        alert("精華影片 ID或VOD網址未輸入");
+                        location.reload();
+                    } else {
+                        alert("精華影片 ID或VOD網址輸入錯誤");
+                        location.reload();
+                    }
                 },
                 changeBar: function (type) {
                     if ((type === 'create' && !this.inputBar) || (type === 'search' && this.inputBar))
