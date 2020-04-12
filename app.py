@@ -2,13 +2,15 @@ import pymongo
 import os
 import json
 import sys
+import modules.Vod
 from flask import Flask, request, jsonify
 from flask_restful import Api
 from bson.json_util import dumps
+# from modules.Vod import insert_vod
 
 app = Flask(__name__)
 api = Api(app)
-sys.path.append("modules")
+# sys.path.append("modules")
 
 @app.route('/')
 def home():
@@ -17,14 +19,12 @@ def home():
 @app.route('/api/vod/create', methods=["POST"])
 def create():
     if request.method == 'POST' :
-        import vod_module
-        data = vod_module.create(request.values['vod_id'])
+        data = modules.Vod.insert_vod(request.values['vod_id'])
         return jsonify(data)
 @app.route('/api/vod', methods=["GET"])
 def index():
     if request.method == 'GET' :
-        import vod_module
-        data = vod_module.index(request.values['highlight_id'])
+        data = modules.Vod.index()
         return dumps(data)
 @app.route('/insert')
 def mongo():
@@ -67,11 +67,11 @@ def mongo3():
 
 @app.route("/count")
 def count():
-    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
-    db = client.ClipFetcher
-    collection = db.Vod
-    count = collection.find().count()
-
+    # client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    # db = client.ClipFetcher
+    # collection = db.Vod
+    # count = collection.find().count()
+    count = modules.Vod.count()
     # return api.add_resource(count)
     return json.dumps(count)
 
