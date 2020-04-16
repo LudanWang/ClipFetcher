@@ -263,6 +263,15 @@
 
     <script type="text/javascript">
 
+        var vodShow = false
+        var vodAnalysisBtnShow = false
+        var vprogressList = false
+        var videoResult = false
+        var inputBar = true
+        var active = true
+        var highlightShow = false
+        var exist = true
+
         var myApp = new Vue({
             el: '#myApp',
             data: {
@@ -363,8 +372,29 @@
                     }
                 },
                 changeBar: function (type) {
-                    if ((type === 'create' && !this.inputBar) || (type === 'search' && this.inputBar))
+                    if ((type === 'create' && !this.inputBar)) {
+                        highlightShow = this.highlightShow
+                        this.vodShow = vodShow;
+                        this.vodAnalysisBtnShow = vodAnalysisBtnShow
+                        this.progressList = progressList
+                        this.videoResult = videoResult
+                        this.active = active
+                        this.highlightShow = false
                         this.inputBar = !this.inputBar;
+                    }
+                    else if ((type === 'search' && this.inputBar)) {
+                        this.highlightShow = highlightShow
+                        vodShow = this.vodShow;
+                        vodAnalysisBtnShow = this.vodAnalysisBtnShow
+                        progressList = this.progressList
+                        videoResult = this.videoResult
+                        this.vodShow = false
+                        this.vodAnalysisBtnShow = false
+                        this.progressList = false
+                        this.videoResult = false
+                        this.active = false
+                        this.inputBar = !this.inputBar;
+                    }
                 },
             },
         });
