@@ -3,7 +3,7 @@ import os
 
 
 def insert(highlight_id, text, score):
-    client = pymongo.MongoClient(os.environ.get('MONGODB_KEY'))
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.FeedBack
     data = {
         'highlight_id': highlight_id,
