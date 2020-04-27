@@ -23,7 +23,7 @@ def index():
 
 
 def count():
-    client = pymongo.MongoClient(os.environ.get('MONGODB_KEY'))
+    client = pymongo.MongoClient(os.environ('MONGODB_KEY'))
     collection = client.ClipFetcher.Vod
     return collection.find().count()
 
