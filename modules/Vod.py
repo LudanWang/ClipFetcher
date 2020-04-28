@@ -9,11 +9,13 @@ def insert_vod(vod_id):
         'vod_id': vod_id,
         'channel_id': 1,
         'game': 'PUPG',
-        'comment': "test"
+        'comment': "test",
+        'youtube_url': '',
+        "avg_score": 0
     }
     collection.insert(data)
     # test = collection.find_one({"vod_id": vod_id}, {"channel_id": 1})
-    return 'OK'
+    return
 
 
 def index():

@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify, abort, Response
 from flask_restful import Api
 from bson.json_util import dumps
 from ChatCrawler import getVodInformation
+from BaseAlgorithm import frequencyAlgo
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -27,11 +28,17 @@ def home():
 @app.route('/api/vod', methods=['GET', 'POST'])
 def vod():
     if request.method == 'POST':
-        # data = getVodInformation(request.values['vod_id'])
-        data = modules.Vod.insert_vod(request.form.get('vod_id'))
+        vod_id = request.form.get('vod_id')
+        modules.Vod.insert_vod(vod_id)
+
+        getVodInformation(vod_id)
+        data = frequencyAlgo(vod_id)
+        modules.HighLight.insert_highlight(vod_id, data)
+
         return '', 204
     if request.method == 'GET':
         data = modules.Vod.index()
+
         return Response(dumps(data), mimetype='application/json')
 
 

@@ -108,7 +108,11 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
     # print(start)
     # print(duration)
 
-    return start,duration
+    data = {
+        'start': start,
+        'duration': duration
+    }
+    return data
 
 
 
