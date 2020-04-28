@@ -27,7 +27,7 @@ def home():
 @app.route('/api/vod', methods=['GET', 'POST'])
 def vod():
     if request.method == 'POST':
-        data = getVodInformation(request.values['vod_id'])
+        # data = getVodInformation(request.values['vod_id'])
         data = modules.Vod.insert_vod(request.values['vod_id'])
         return '', 204
     if request.method == 'GET':
