@@ -18,10 +18,13 @@ def insert_vod(vod_id):
     return
 
 
-def index():
+def index(vod_id=None):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.Vod
-    return collection.find()
+    if vod_id is None:
+        return collection.find()
+    else:
+        return collection.find({"vod_id": vod_id})
 
 
 def count():

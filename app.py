@@ -37,7 +37,10 @@ def vod():
 
         return '', 204
     if request.method == 'GET':
-        data = modules.Vod.index()
+        if request.values.get('vod_id') is None:
+            data = modules.Vod.index()
+        else:
+            data = modules.Vod.index(request.values.get('vod_id'))
 
         return Response(dumps(data), mimetype='application/json')
 
