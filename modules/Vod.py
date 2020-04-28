@@ -10,7 +10,7 @@ def insert_vod(vod_id):
         'channel_id': 1,
         'game': 'PUPG',
         'comment': "test",
-        'youtube_url': '',
+        'youtube_url': 'https://youtu.be/frguLOUro2E',
         "avg_score": 0
     }
     collection.insert(data)

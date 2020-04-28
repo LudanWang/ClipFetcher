@@ -17,7 +17,7 @@ def insert_highlight(vod_id, data):
         'vod_id': vod_id,
         'start_at': data['start'],
         'duration': data['duration'],
-        'youtube_url': '',
+        'youtube_url': 'https://youtu.be/frguLOUro2E',
         "avg_score": 0
     }
     collection.insert(data)
