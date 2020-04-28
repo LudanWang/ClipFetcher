@@ -38,7 +38,7 @@ def vod():
 @app.route('/api/vod/check', methods=['POST'])
 def check():
     if request.method == 'POST':
-        data = modules.Vod.check(request.values['vod_id'])
+        data = modules.Vod.check(request.form.get('vod_id'))
         if data is None:
             return abort(403)
         else:
@@ -48,7 +48,7 @@ def check():
 @app.route('/api/vod/status', methods=['POST'])
 def status():
     if request.method == 'POST':
-        data = modules.Vod.status(request.values['vod_id'], request.values['highlight_id'])
+        data = modules.Vod.status(request.form.get('vod_id'), request.form.get('highlight_id'))
         return '', 204
 
 
@@ -64,8 +64,8 @@ def vodHighlight():
 @app.route('/api/vod/appraise', methods=['POST'])
 def insert():
     if request.method == 'POST':
-        print(request.values['highlight_id'])
-        data = modules.FeedBack.insert(request.values['highlight_id'], request.values['text'], request.values['score'])
+        print(request.form.get('highlight_id'))
+        data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'), request.form.get('score'))
         return '', 204
 
 
