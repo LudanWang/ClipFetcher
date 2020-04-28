@@ -8,10 +8,12 @@ import modules.FeedBack
 from flask import Flask, request, jsonify, abort, Response
 from flask_restful import Api
 from bson.json_util import dumps
+from ChatCrawler import getVodInformation
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
-
+CORS(app)
 
 # sys.path.append("modules")
 
@@ -25,6 +27,7 @@ def home():
 @app.route('/api/vod', methods=['GET', 'POST'])
 def vod():
     if request.method == 'POST':
+        data = getVodInformation(request.values['vod_id'])
         data = modules.Vod.insert_vod(request.values['vod_id'])
         return '', 204
     if request.method == 'GET':
