@@ -44,10 +44,12 @@ def vod():
 
         return '', 204
     if request.method == 'GET':
-        if request.values.get('vod_id') is None:
+        requests = request.args
+        vod_id = requests['vod_id']
+        if vod_id is None:
             data = modules.Vod.index()
         else:
-            data = modules.Vod.index(request.values.get('vod_id'))
+            data = modules.Vod.index(vod_id)
 
         return Response(dumps(data), mimetype='application/json')
 
@@ -55,7 +57,9 @@ def vod():
 @app.route('/api/vod/check', methods=['POST'])
 def check():
     if request.method == 'POST':
-        data = modules.Vod.check(request.form.get('vod_id'))
+        requests = request.json
+        vod_id = requests['vod_id']
+        data = modules.Vod.check(vod_id)
         if data is None:
             return abort(403)
         else:
@@ -73,7 +77,9 @@ def status():
 @app.route('/api/vod/highlight', methods=['GET'])
 def vodHighlight():
     if request.method == 'GET':
-        data = modules.HighLight.getHighlight(request.values['highlight_id'])
+        requests = request.args
+        highlight_id = requests['highlight_id']
+        data = modules.HighLight.getHighlight(highlight_id)
         return Response(dumps(data), mimetype='application/json')
 
 
