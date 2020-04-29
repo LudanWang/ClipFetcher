@@ -29,8 +29,8 @@ def home():
 def vod():
     if request.method == 'POST':
         vod_id = request.form.get('vod_id')
-        if modules.Vod.check_vod(vod_id) is not None:
-            abort(400, description="vod_id 已分析過")
+        # if modules.Vod.check_vod(vod_id) is not None:
+            # abort(400, description="vod_id 已分析過")
         modules.Vod.insert_vod(vod_id)
         getVodInformation(vod_id)
 
