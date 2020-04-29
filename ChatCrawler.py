@@ -10,7 +10,7 @@ class VOD():
         self.cloud_id=cloud_id
 
 def getVodInformation(vod_id):
-    url = "https://api.twitch.tv/kraken/videos/" + vod_id
+    url = "https://api.twitch.tv/kraken/videos/" + str(vod_id)
     headers = {
         "Accept": "application/vnd.twitchtv.v5+json",
         "Client-ID": "ildytfqanhzvdaprp96m5rkylap16k"
@@ -22,7 +22,7 @@ def getVodInformation(vod_id):
     game=vodInformation['game']
     v=VOD(vod_id, channel_id, game, "http")
 
-    url = "https://api.twitch.tv/kraken/videos/" + vod_id + "/comments/?cursor"
+    url = "https://api.twitch.tv/kraken/videos/" + str(vod_id) + "/comments/?cursor"
     res = requests.get(url, headers=headers)
     commentJson=res.json()
     time=[]
@@ -50,6 +50,7 @@ def getVodInformation(vod_id):
                 'chat':chat[i]
             }
         )
+    return
 
     fileName = vod_id + ".json"
     f = open(fileName, "w+", encoding="utf-8")

@@ -32,6 +32,11 @@ def count():
     collection = client.ClipFetcher.Vod
     return collection.find().count()
 
+def check_vod(vod_id):
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    collection = client.ClipFetcher.Vod
+    return collection.find_one({"vod_id": vod_id})
+
 
 def check(vod_id):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
