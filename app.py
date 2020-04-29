@@ -16,6 +16,7 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
+
 # sys.path.append("modules")
 
 # /api/vod/appraise
@@ -24,16 +25,17 @@ CORS(app)
 def home():
     return "Hello world"
 
+
 # Vod
 @app.route('/api/vod', methods=['GET', 'POST'])
 def vod():
     if request.method == 'POST':
         requests = request.json
         vod_id = requests['vod_id']
-        if vod_id is None:
+        if not vod_id:
             abort(501, description="不能為空")
         # if modules.Vod.check_vod(vod_id) is not None:
-            # abort(400, description="vod_id 已分析過")
+        # abort(400, description="vod_id 已分析過")
         modules.Vod.insert_vod(vod_id)
         getVodInformation(vod_id)
         data = frequencyAlgo(vod_id)
@@ -42,10 +44,10 @@ def vod():
         return '', 204
     if request.method == 'GET':
         vod_id = request.values.get('vod_id')
-        if vod_id is None:
-            data = modules.Vod.index()
-        else:
+        if vod_id:
             data = modules.Vod.index(vod_id)
+        else:
+            data = modules.Vod.index()
 
         return Response(dumps(data), mimetype='application/json')
 
@@ -56,10 +58,11 @@ def check():
         requests = request.json
         vod_id = requests['vod_id']
         data = modules.Vod.check(vod_id)
-        if data is None:
-            return abort(403)
-        else:
+        if data:
             return '', 204
+        else:
+            return abort(403)
+
 
 # TODO 進度分析未完成
 @app.route('/api/vod/status', methods=['POST'])
@@ -71,11 +74,14 @@ def status():
 
 # Highlight
 @app.route('/api/vod/highlight', methods=['GET'])
-def vodHighlight():
+def vod_highlight():
     if request.method == 'GET':
-        highlight_id = request.values.get('vod_id')
-        data = modules.HighLight.getHighlight(highlight_id)
-        return Response(dumps(data), mimetype='application/json')
+        highlight_id = request.values.get('highlight_id')
+        data = modules.HighLight.get_highlight(highlight_id)
+        if data:
+            return Response(dumps(data), mimetype='application/json')
+        else:
+            return abort(403, description="highlight_id 不存在")
 
 
 # Feedback
@@ -83,7 +89,8 @@ def vodHighlight():
 def insert():
     if request.method == 'POST':
         print(request.form.get('highlight_id'))
-        data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'), request.form.get('score'))
+        data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'),
+                                       request.form.get('score'))
         return '', 204
 
 
