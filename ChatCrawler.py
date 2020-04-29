@@ -50,7 +50,6 @@ def getVodInformation(vod_id):
                 'chat':chat[i]
             }
         )
-    return
 
     fileName = vod_id + ".json"
     f = open(fileName, "w+", encoding="utf-8")
