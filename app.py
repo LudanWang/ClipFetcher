@@ -129,9 +129,9 @@ def insert():
 def mongo3():
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     db = client.ClipFetcher
-    collection = db.Vod
-    result = collection.remove({'name': '*'})
-    print(result)
+    # collection = db.Vod
+    db.Vod.remove({ })
+    db.HighLight.remove({ })
 
     return 'OK'
 
