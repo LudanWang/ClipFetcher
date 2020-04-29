@@ -31,7 +31,8 @@ def vod():
         vod_id = request.form.get('vod_id')
         modules.Vod.insert_vod(vod_id)
 
-        # getVodInformation(vod_id)
+        getVodInformation(vod_id)
+
         # data = frequencyAlgo(vod_id)
         # modules.HighLight.insert_highlight(vod_id, data)
 
