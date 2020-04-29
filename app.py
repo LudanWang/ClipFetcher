@@ -28,13 +28,16 @@ def home():
 @app.route('/api/vod', methods=['GET', 'POST'])
 def vod():
     if request.method == 'POST':
-        vod_id = request.form.get('vod_id')
+        requests = request.json
+        vod_id = requests['vod_id']
+        if vod_id is None:
+            abort(501, description="不能為空")
         # if modules.Vod.check_vod(vod_id) is not None:
             # abort(400, description="vod_id 已分析過")
         modules.Vod.insert_vod(vod_id)
         getVodInformation(vod_id)
         data = frequencyAlgo(vod_id)
-        # modules.HighLight.insert_highlight(vod_id, data)
+        modules.HighLight.insert_highlight(vod_id, data)
 
         return '', 204
     if request.method == 'GET':
