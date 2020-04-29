@@ -33,6 +33,8 @@ def vod():
             # abort(400, description="vod_id 已分析過")
         modules.Vod.insert_vod(vod_id)
         getVodInformation(vod_id)
+        data = frequencyAlgo(vod_id)
+        # modules.HighLight.insert_highlight(vod_id, data)
 
         # data = frequencyAlgo(vod_id)
         # modules.HighLight.insert_highlight(vod_id, data)
