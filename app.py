@@ -41,8 +41,7 @@ def vod():
 
         return '', 204
     if request.method == 'GET':
-        requests = request.args
-        vod_id = requests['vod_id']
+        vod_id = request.values.get('vod_id')
         if vod_id is None:
             data = modules.Vod.index()
         else:
@@ -74,8 +73,7 @@ def status():
 @app.route('/api/vod/highlight', methods=['GET'])
 def vodHighlight():
     if request.method == 'GET':
-        requests = request.args
-        highlight_id = requests['highlight_id']
+        highlight_id = request.values.get('vod_id')
         data = modules.HighLight.getHighlight(highlight_id)
         return Response(dumps(data), mimetype='application/json')
 
