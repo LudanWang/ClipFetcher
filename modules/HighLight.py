@@ -16,6 +16,8 @@ def insert_highlight(vod_id, data):
     data = {
         'highlight_id': vod_id,
         'vod_id': vod_id,
+        'channel_id': 1,
+        'game': 'PUPG',
         'start_at': data['start'],
         'duration': data['duration'],
         'youtube_url': 'https://youtu.be/frguLOUro2E',
