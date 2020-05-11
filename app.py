@@ -11,10 +11,17 @@ from bson.json_util import dumps
 from ChatCrawler import getVodInformation
 from BaseAlgorithm import frequencyAlgo
 from flask_cors import CORS
+from threading import Thread
 
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
+
+
+def run_analysis(vod_id):
+    getVodInformation(vod_id)
+    data = frequencyAlgo(vod_id)
+    modules.HighLight.insert_highlight(vod_id, data)
 
 
 # sys.path.append("modules")
@@ -37,9 +44,7 @@ def vod():
         modules.Vod.insert_vod(vod_id)
         # if modules.Vod.check_vod(vod_id) is not None:
         # abort(400, description="vod_id 已分析過")
-        getVodInformation(vod_id)
-        data = frequencyAlgo(vod_id)
-        modules.HighLight.insert_highlight(vod_id, data)
+        Thread(target=run_analysis, args=(vod_id,)).start()
 
         return '', 204
     if request.method == 'GET':
@@ -99,6 +104,15 @@ def insert():
                                        request.form.get('score'))
         return '', 204
 
+
+# Opinion
+# @app.route('/api/vod/opinion', methods=['POST'])
+# def insert():
+#     if request.method == 'POST':
+#         print(request.form.get('highlight_id'))
+#         data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'),
+#                                        request.form.get('score'))
+#         return '', 204
 
 # @app.route('/insert')
 # def mongo():
