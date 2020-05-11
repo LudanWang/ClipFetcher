@@ -26,10 +26,12 @@ def index(vod_id=None):
     else:
         return collection.find().sort("vod_id", -1)
 
+
 def count():
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.Vod
     return collection.find().count()
+
 
 def check_vod(vod_id):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
@@ -43,7 +45,13 @@ def check(vod_id):
     return collection.find_one({"vod_id": vod_id})
 
 
-def status(vod_id, highlight_id):
+def status(vod_id=None, status_code=0):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.Vod
-    return 'OK'
+    if vod_id is not None:
+        if collection.find({"vod_id": vod_id}).count() is not 0:
+            status_code += 1
+            if client.ClipFetcher.HighLight.find({"vod_id": vod_id}).count() is not 0:
+                status_code += 1
+
+    return status_code

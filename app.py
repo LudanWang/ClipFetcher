@@ -34,9 +34,9 @@ def vod():
         vod_id = requests['vod_id']
         if not vod_id:
             abort(501, description="不能為空")
+        modules.Vod.insert_vod(vod_id)
         # if modules.Vod.check_vod(vod_id) is not None:
         # abort(400, description="vod_id 已分析過")
-        modules.Vod.insert_vod(vod_id)
         getVodInformation(vod_id)
         data = frequencyAlgo(vod_id)
         modules.HighLight.insert_highlight(vod_id, data)
@@ -67,12 +67,18 @@ def check():
             return abort(403)
 
 
-# TODO 進度分析未完成
+# status_code:
+# 0:還未有 vod 資料
+# 1:分析進行中
+# 2:分析完成
 @app.route('/api/vod/status', methods=['POST'])
 def status():
     if request.method == 'POST':
-        data = modules.Vod.status(request.form.get('vod_id'), request.form.get('highlight_id'))
-        return '', 204
+        data = request.json
+        if data['vod_id'] is None:
+            return abort(400, description="vod_id 無資料")
+        status_code = modules.Vod.status(data['vod_id'])
+        return jsonify({"status": status_code})
 
 
 # Highlight
@@ -130,8 +136,8 @@ def mongo3():
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     db = client.ClipFetcher
     # collection = db.Vod
-    db.Vod.remove({ })
-    db.HighLight.remove({ })
+    db.Vod.remove({})
+    db.HighLight.remove({})
 
     return 'OK'
 
