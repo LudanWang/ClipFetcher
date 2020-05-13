@@ -1,7 +1,6 @@
 import requests
 import json
 
-
 class VOD():
     def __init__(self, vod_id, channel_id, game, cloud_id):
         self.vod_id=vod_id
@@ -17,6 +16,8 @@ def getVodInformation(vod_id):
     }
     res = requests.get(url, headers=headers)
     vodInformation = res.json()
+    print(vodInformation)
+    title=vodInformation['title']
     streamerName=vodInformation['channel']['display_name']
     channel_id=vodInformation['channel']['_id']
     game=vodInformation['game']
@@ -42,6 +43,9 @@ def getVodInformation(vod_id):
             nextSection = url + "=" + commentJson['_next']
 
     data={}
+    data['title']=title
+    data['streamerName']=streamerName
+    data['game']=game
     data['comment']=[]
     for i in range(len(time)):
         data['comment'].append(
@@ -55,14 +59,3 @@ def getVodInformation(vod_id):
     f = open(fileName, "w+", encoding="utf-8")
     f.write(json.dumps(data,ensure_ascii=False))
     f.close()
-
-#554877888
-
-#getVodInformation("569689535")
-# t=BaseAlgorithm.frequencyAlgo("556617932",0)
-# clipCount=len(t[0])
-# ffmpegDownload("556617932",t)
-# ffmpegCombine("556617932",clipCount)
-
-#getDownloadURL("563696555")
-#563696555 556617932 554877888 553397882 553337792 569689535
