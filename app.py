@@ -85,12 +85,12 @@ def status():
 @app.route('/api/vod/highlight', methods=['GET'])
 def vod_highlight():
     if request.method == 'GET':
-        highlight_id = request.values.get('highlight_id')
-        data = modules.HighLight.get_highlight(highlight_id)
+        requests = request.values
+        data = modules.HighLight.get_highlight(requests)
         if data:
             return Response(dumps(data), mimetype='application/json')
         else:
-            return abort(403, description="highlight_id 不存在")
+            return abort(400, description="搜尋不存在")
 
 
 # Feedback
@@ -149,6 +149,7 @@ def mongo3():
     # collection = db.Vod
     db.Vod.remove({})
     db.HighLight.remove({})
+    db.Opinion.remove({})
 
     return 'OK'
 
