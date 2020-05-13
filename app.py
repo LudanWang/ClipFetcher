@@ -2,9 +2,7 @@ import pymongo
 import os
 import json
 import sys
-import modules.Vod
-import modules.HighLight
-import modules.FeedBack
+import modules.FeedBack, modules.Vod, modules.HighLight, modules.Opinion
 from flask import Flask, request, jsonify, abort, Response
 from flask_restful import Api
 from bson.json_util import dumps
@@ -90,17 +88,17 @@ def status():
 @app.route('/api/vod/highlight', methods=['GET'])
 def vod_highlight():
     if request.method == 'GET':
-        highlight_id = request.values.get('highlight_id')
-        data = modules.HighLight.get_highlight(highlight_id)
+        requests = request.values
+        data = modules.HighLight.get_highlight(requests)
         if data:
             return Response(dumps(data), mimetype='application/json')
         else:
-            return abort(403, description="highlight_id 不存在")
+            return abort(400, description="搜尋不存在")
 
 
 # Feedback
 @app.route('/api/vod/appraise', methods=['POST'])
-def insert():
+def appraise():
     if request.method == 'POST':
         print(request.form.get('highlight_id'))
         data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'),
@@ -109,13 +107,15 @@ def insert():
 
 
 # Opinion
-# @app.route('/api/vod/opinion', methods=['POST'])
-# def insert():
-#     if request.method == 'POST':
-#         print(request.form.get('highlight_id'))
-#         data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'),
-#                                        request.form.get('score'))
-#         return '', 204
+@app.route('/api/opinion', methods=['GET', 'POST'])
+def opinion():
+    if request.method == 'POST':
+        requests = request.json
+        modules.Opinion.insert(requests)
+        return '', 204
+    if request.method == 'GET':
+        data = modules.Opinion.index()
+        return Response(dumps(data), mimetype='application/json')
 
 # @app.route('/insert')
 # def mongo():
@@ -152,6 +152,7 @@ def mongo3():
     # collection = db.Vod
     db.Vod.remove({})
     db.HighLight.remove({})
+    db.Opinion.remove({})
 
     return 'OK'
 

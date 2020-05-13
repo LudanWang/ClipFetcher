@@ -7,6 +7,7 @@ def insert_vod(vod_id):
     collection = client.ClipFetcher.Vod
     data = {
         'vod_id': vod_id,
+        'title': 'test title',
         'channel_id': 1,
         'game': 'PUPG',
         'comment': "test",
