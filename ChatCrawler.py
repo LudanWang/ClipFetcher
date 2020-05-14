@@ -8,7 +8,6 @@ class VOD():
         self.game = game
         self.cloud_id = cloud_id
 
-
 def getVodInformation(vod_id):
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id)
     headers = {
@@ -17,6 +16,9 @@ def getVodInformation(vod_id):
     }
     res = requests.get(url, headers=headers)
     vodInformation = res.json()
+    if 'error' in vodInformation.keys():
+        print('DOWNLOAD VOD INFORMATION ERROR')
+        return None
     title=vodInformation['title']
     streamerName=vodInformation['channel']['display_name']
     channel_id=vodInformation['channel']['_id']
@@ -55,7 +57,7 @@ def getVodInformation(vod_id):
             }
         )
 
-    fileName = vod_id + ".json"
+    fileName = './ChatHistory/' + vod_id + ".json"
     f = open(fileName, "w+", encoding="utf-8")
     f.write(json.dumps(data, ensure_ascii=False))
     f.close()
