@@ -17,15 +17,18 @@ CORS(app)
 
 
 def run_analysis(vod_id):
+    print("status: 0")
     getVodInformation(vod_id)
+    print("status: 1")
     data = frequencyAlgo(vod_id)
+    print("status: 2")
     modules.HighLight.insert_highlight(vod_id, data)
+    print("status: 3")
 
 
 # sys.path.append("modules")
 
 # /api/vod/appraise
-# /api/vod/opinion
 @app.route('/')
 def home():
     return "Hello world"

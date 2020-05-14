@@ -7,13 +7,13 @@ def get_highlight(requests):
     collection = client.ClipFetcher.HighLight
     data = collection.find()
     if requests.get('highlight_id') is not None:
-        data = collection.find({"highlight_id": requests.get('highlight_id')})
+        data = data.find({"highlight_id": requests.get('highlight_id')})
     if requests.get('vod_id') is not None:
-        data = collection.find({"vod_id": requests.get('vod_id')})
+        data = data.find({"vod_id": requests.get('vod_id')})
     if requests.get('channel_id') is not None:
-        data = collection.find({"channel_id": requests.get('channel_id')})
+        data = data.find({"channel_id": requests.get('channel_id')})
     if requests.get('game') is not None:
-        data = collection.find({"game": requests.get('game')})
+        data = data.find({"game": requests.get('game')})
     return data
 
 
