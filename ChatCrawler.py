@@ -3,10 +3,11 @@ import json
 
 class VOD():
     def __init__(self, vod_id, channel_id, game, cloud_id):
-        self.vod_id=vod_id
-        self.channel_id=channel_id
-        self.game=game
-        self.cloud_id=cloud_id
+        self.vod_id = vod_id
+        self.channel_id = channel_id
+        self.game = game
+        self.cloud_id = cloud_id
+
 
 def getVodInformation(vod_id):
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id)
@@ -25,9 +26,9 @@ def getVodInformation(vod_id):
 
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id) + "/comments/?cursor"
     res = requests.get(url, headers=headers)
-    commentJson=res.json()
-    time=[]
-    chat=[]
+    commentJson = res.json()
+    time = []
+    chat = []
     for item in commentJson['comments']:
         time.append(item['content_offset_seconds'])
         chat.append(item['message']['body'])
@@ -50,12 +51,12 @@ def getVodInformation(vod_id):
     for i in range(len(time)):
         data['comment'].append(
             {
-                'time':time[i],
-                'chat':chat[i]
+                'time': time[i],
+                'chat': chat[i]
             }
         )
 
     fileName = vod_id + ".json"
     f = open(fileName, "w+", encoding="utf-8")
-    f.write(json.dumps(data,ensure_ascii=False))
+    f.write(json.dumps(data, ensure_ascii=False))
     f.close()
