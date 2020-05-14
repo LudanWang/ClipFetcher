@@ -17,7 +17,6 @@ def getVodInformation(vod_id):
     }
     res = requests.get(url, headers=headers)
     vodInformation = res.json()
-    print(vodInformation)
     title=vodInformation['title']
     streamerName=vodInformation['channel']['display_name']
     channel_id=vodInformation['channel']['_id']
