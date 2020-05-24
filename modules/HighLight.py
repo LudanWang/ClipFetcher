@@ -23,7 +23,7 @@ def insert_highlight(vod_id, data):
     data = {
         'highlight_id': vod_id,
         'vod_id': vod_id,
-        'channel_id': '2',
+        'channel_id': data['channel_id'],
         'streamerName': data['streamerName'],
         'game': data['game'],
         'start_at': data['start'],
@@ -38,6 +38,15 @@ def insert_highlight(vod_id, data):
 def update_avg_score(highlight_id, score):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.HighLight
-    collection.update_one({'highlight_id': highlight_id}, {set:{'avg_score': score}})
+    collection.update_one({'highlight_id': highlight_id}, {'$set':{'avg_score': score}})
 
     return
+
+def is_define(highlight_id):
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    collection = client.ClipFetcher.HighLight
+    is_define = collection.find({'highlight_id': highlight_id})
+    if list(is_define) == []:
+        return False
+    else:
+        return True
