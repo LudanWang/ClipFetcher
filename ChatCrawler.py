@@ -19,10 +19,10 @@ def getVodInformation(vod_id):
     if 'error' in vodInformation.keys():
         print('DOWNLOAD VOD INFORMATION ERROR')
         return None
-    title=vodInformation['title']
-    streamerName=vodInformation['channel']['display_name']
-    channel_id=vodInformation['channel']['_id']
-    game=vodInformation['game']
+    title = vodInformation['title']
+    streamerName = vodInformation['channel']['display_name']
+    channel_id = vodInformation['channel']['_id']
+    game = vodInformation['game']
     v=VOD(vod_id, channel_id, game, "http")
 
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id) + "/comments/?cursor"
@@ -45,10 +45,11 @@ def getVodInformation(vod_id):
             nextSection = url + "=" + commentJson['_next']
 
     data={}
-    data['title']=title
-    data['streamerName']=streamerName
-    data['game']=game
-    data['comment']=[]
+    data['title'] = title
+    data['channel_id'] = channel_id
+    data['streamerName'] = streamerName
+    data['game'] = game
+    data['comment'] = []
     for i in range(len(time)):
         data['comment'].append(
             {

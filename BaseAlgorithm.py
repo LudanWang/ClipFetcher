@@ -4,11 +4,12 @@ from time import gmtime
 import statistics
 
 def frequencyAlgo(vod_id):#a秒內有b個留言
-    filename=vod_id+".json"
-    f = open(filename, "r", encoding="utf-8")  # filename
+    fileName = './ChatHistory/' + vod_id + ".json"
+    f = open(fileName, "r", encoding="utf-8")  # filename
     y = json.loads(f.read())
-    title=y['title']
-    streamerName=y['streamerName']
+    title = y['title']
+    channel_id = y['channel_id']
+    streamerName = y['streamerName']
     game=y['game']
     freqCount=[0]*int(y['comment'][-1]['time']+1)#計算每一個時間點的時間頻率
     for i in range(len(y['comment'])):
@@ -102,9 +103,10 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
         duration[i]=strftime("%H:%M:%S", gmtime(duration[i]))
 
     data = {}
-    data['title']=title
-    data['streamerName']=streamerName
-    data['game']=game
-    data['start']=start
-    data['duration']=duration
+    data['title'] = title
+    data['channel_id'] = channel_id
+    data['streamerName'] = streamerName
+    data['game'] = game
+    data['start'] = start
+    data['duration'] = duration
     return data
