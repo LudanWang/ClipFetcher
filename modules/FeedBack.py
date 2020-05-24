@@ -1,11 +1,13 @@
 import pymongo
 import os
 import modules.HighLight
-
+from flask import abort
 
 def insert(highlight_id, text, score):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.FeedBack
+    if not is_not_find_highlight(highlight_id):
+        return abort(400, description="搜尋不到此 highlight_id")
     data = {
         'highlight_id': highlight_id,
         'text': text,
@@ -14,6 +16,9 @@ def insert(highlight_id, text, score):
     collection.insert(data)
     update_avg_score(highlight_id, score)
     return "OK"
+
+def is_not_find_highlight(highlight_id):
+    return modules.HighLight.is_define(highlight_id)
 
 def update_avg_score(highlight_id, score):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
