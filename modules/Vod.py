@@ -8,7 +8,7 @@ def insert_vod(vod_id):
     data = {
         'vod_id': vod_id,
         'title': 'test title',
-        'channel_id': 1,
+        'channel_id': 3,
         'game': 'PUPG',
         'comment': "test",
         'youtube_url': 'https://youtu.be/frguLOUro2E',

@@ -8,7 +8,6 @@ class VOD():
         self.game = game
         self.cloud_id = cloud_id
 
-
 def getVodInformation(vod_id):
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id)
     headers = {
@@ -17,11 +16,13 @@ def getVodInformation(vod_id):
     }
     res = requests.get(url, headers=headers)
     vodInformation = res.json()
-    print(vodInformation)
-    title=vodInformation['title']
-    streamerName=vodInformation['channel']['display_name']
-    channel_id=vodInformation['channel']['_id']
-    game=vodInformation['game']
+    if 'error' in vodInformation.keys():
+        print('DOWNLOAD VOD INFORMATION ERROR')
+        return None
+    title = vodInformation['title']
+    streamerName = vodInformation['channel']['display_name']
+    channel_id = vodInformation['channel']['_id']
+    game = vodInformation['game']
     v=VOD(vod_id, channel_id, game, "http")
 
     url = "https://api.twitch.tv/kraken/videos/" + str(vod_id) + "/comments/?cursor"
@@ -44,10 +45,11 @@ def getVodInformation(vod_id):
             nextSection = url + "=" + commentJson['_next']
 
     data={}
-    data['title']=title
-    data['streamerName']=streamerName
-    data['game']=game
-    data['comment']=[]
+    data['title'] = title
+    data['channel_id'] = channel_id
+    data['streamerName'] = streamerName
+    data['game'] = game
+    data['comment'] = []
     for i in range(len(time)):
         data['comment'].append(
             {
@@ -56,7 +58,7 @@ def getVodInformation(vod_id):
             }
         )
 
-    fileName = vod_id + ".json"
+    fileName = './ChatHistory/' + vod_id + ".json"
     f = open(fileName, "w+", encoding="utf-8")
     f.write(json.dumps(data, ensure_ascii=False))
     f.close()

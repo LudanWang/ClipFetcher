@@ -103,9 +103,8 @@ def vod_highlight():
 @app.route('/api/vod/appraise', methods=['POST'])
 def appraise():
     if request.method == 'POST':
-        print(request.form.get('highlight_id'))
-        data = modules.FeedBack.insert(request.form.get('highlight_id'), request.form.get('text'),
-                                       request.form.get('score'))
+        data = request.json
+        modules.FeedBack.insert(data['highlight_id'], data['text'], data['score'])
         return '', 204
 
 
@@ -156,6 +155,7 @@ def mongo3():
     db.Vod.remove({})
     db.HighLight.remove({})
     db.Opinion.remove({})
+    db.FeedBack.remove({})
 
     return 'OK'
 

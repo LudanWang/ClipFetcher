@@ -4,10 +4,13 @@ from time import gmtime
 import statistics
 
 def frequencyAlgo(vod_id):#a秒內有b個留言
-    filename=vod_id+".json"
-    f = open(filename, "r", encoding="utf-8")  # filename
+    fileName = './ChatHistory/' + vod_id + ".json"
+    f = open(fileName, "r", encoding="utf-8")  # filename
     y = json.loads(f.read())
-
+    title = y['title']
+    channel_id = y['channel_id']
+    streamerName = y['streamerName']
+    game=y['game']
     freqCount=[0]*int(y['comment'][-1]['time']+1)#計算每一個時間點的時間頻率
     for i in range(len(y['comment'])):
         freqCount[int(y['comment'][i]['time'])]+=1
@@ -78,20 +81,15 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
         for i in range(len(freq95Start)):
             tempStart.append(freq95Start[i])
             tempEnd.append(freq95End[i])
-    # print('start',tempStart)
-    # print('end',tempEnd)
+
     tempduration=[]
     for i in range(len(tempStart)):
         tempduration.append(tempEnd[i]-tempStart[i]+1)
-    # print('duration',tempduration)
 
-#得到前幾長的精華片段 要找前幾長還要再研究
     longestClipIndex = sorted(sorted(range(len(tempduration)), key=lambda sub: tempduration[sub])[-7:])#計算前幾長的
     ssum=0
     for i in range(len(longestClipIndex)):
         ssum+=tempduration[longestClipIndex[i]]
-        # print(tempStart[longestClipIndex[i]],tempduration[longestClipIndex[i]])
-    # print('cliplength',strftime("%H:%M:%S", gmtime(ssum)))#clip長度
 
 #最後輸出 開始時間 及 影片長度
     start=[]
@@ -99,22 +97,16 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
     for i in range(len(longestClipIndex)):
         start.append(tempStart[longestClipIndex[i]])
         duration.append(tempduration[longestClipIndex[i]])
-    # print('start',start)
-    # print('duration',duration)
-    #timestamp=[Start,duration]
+
     for i in range(len(start)):
         start[i]=strftime("%H:%M:%S", gmtime(start[i]))
         duration[i]=strftime("%H:%M:%S", gmtime(duration[i]))
-    # print(start)
-    # print(duration)
 
-    data = {
-        'start': start,
-        'duration': duration
-    }
+    data = {}
+    data['title'] = title
+    data['channel_id'] = channel_id
+    data['streamerName'] = streamerName
+    data['game'] = game
+    data['start'] = start
+    data['duration'] = duration
     return data
-
-
-
-
-
