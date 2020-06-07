@@ -40,9 +40,11 @@ def vod():
     if request.method == 'POST':
         requests = request.json
         vod_id = requests['vod_id']
+        memo = requests['memo']
         if not vod_id:
             abort(501, description="不能為空")
-        modules.Vod.insert_vod(vod_id)
+        
+        modules.Vod.insert_vod(vod_id, memo)
         # if modules.Vod.check_vod(vod_id) is not None:
         # abort(400, description="vod_id 已分析過")
         Thread(target=run_analysis, args=(vod_id,)).start()

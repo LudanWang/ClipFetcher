@@ -2,7 +2,7 @@ import pymongo
 import os
 
 
-def insert_vod(vod_id):
+def insert_vod(vod_id, memo = ""):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.Vod
     data = {
@@ -12,7 +12,8 @@ def insert_vod(vod_id):
         'game': 'PUPG',
         'comment': "test",
         'youtube_url': 'https://youtu.be/frguLOUro2E',
-        "avg_score": 0
+        "avg_score": 0,
+        'memo': memo
     }
     collection.insert(data)
     # test = collection.find_one({"vod_id": vod_id}, {"channel_id": 1})
