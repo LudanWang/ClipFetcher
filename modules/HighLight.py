@@ -17,12 +17,12 @@ def get_highlight(requests):
     return data
 
 
-def insert_first_highlight(highlight_id):
+def insert_first_highlight(highlight_id, vod_id):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.HighLight
     data = {
         'highlight_id': highlight_id,
-        'vod_id': None,
+        'vod_id': vod_id,
         'channel_id': None,
         'streamerName': None,
         'game': None,
@@ -78,6 +78,7 @@ def get_new_highlight(vod_id):
     if is_define is None:
         return vod_id + '001'
     else:
+        is_define = collection.find_one({'vod_id': vod_id}, sort=[('highlight_id', -1)])
         new_highlight = int(is_define['highlight_id'])
         new_highlight += 1
         return str(new_highlight)
