@@ -17,11 +17,29 @@ def get_highlight(requests):
     return data
 
 
-def insert_highlight(vod_id, data):
+def insert_first_highlight(highlight_id):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.HighLight
     data = {
-        'highlight_id': vod_id,
+        'highlight_id': highlight_id,
+        'vod_id': None,
+        'channel_id': None,
+        'streamerName': None,
+        'game': None,
+        'start_at': None,
+        'duration': None,
+        'youtube_url': None,
+        "avg_score": None,
+        'memo': None,
+    }
+    collection.insert(data)
+
+    return
+
+def insert_highlight(vod_id, highlight_id, memo, data):
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    collection = client.ClipFetcher.HighLight
+    collection.update_one({'highlight_id': highlight_id}, {'$set':{
         'vod_id': vod_id,
         'channel_id': data['channel_id'],
         'streamerName': data['streamerName'],
@@ -29,9 +47,10 @@ def insert_highlight(vod_id, data):
         'start_at': data['start'],
         'duration': data['duration'],
         'youtube_url': 'https://youtu.be/frguLOUro2E',
-        "avg_score": 0
-    }
-    collection.insert(data)
+        "avg_score": 0,
+        'memo': memo
+        }
+    })
 
     return
 
@@ -50,3 +69,15 @@ def is_define(highlight_id):
         return False
     else:
         return True
+
+def get_new_highlight(vod_id):
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    collection = client.ClipFetcher.HighLight
+    is_define = collection.find_one({'vod_id': vod_id})
+    
+    if is_define is None:
+        return vod_id + '001'
+    else:
+        new_highlight = int(is_define['highlight_id'])
+        new_highlight += 1
+        return new_highlight

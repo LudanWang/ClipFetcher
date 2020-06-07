@@ -16,13 +16,13 @@ api = Api(app)
 CORS(app)
 
 
-def run_analysis(vod_id):
+def run_analysis(vod_id, new_highlight_id, memo):
     print("status: 0")
     getVodInformation(vod_id)
     print("status: 1")
     data = frequencyAlgo(vod_id)
     print("status: 2")
-    modules.HighLight.insert_highlight(vod_id, data)
+    modules.HighLight.insert_highlight(vod_id, new_highlight_id, memo, data)
     print("status: 3")
 
 
@@ -40,17 +40,21 @@ def vod():
     if request.method == 'POST':
         requests = request.json
         vod_id = requests['vod_id']
+        memo = requests['memo']
         if not vod_id:
             abort(501, description="不能為空")
-        modules.Vod.insert_vod(vod_id)
+        
+        modules.Vod.insert_vod(vod_id, memo)
         # if modules.Vod.check_vod(vod_id) is not None:
         # abort(400, description="vod_id 已分析過")
-        Thread(target=run_analysis, args=(vod_id,)).start()
+        new_highlight_id = modules.HighLight.get_new_highlight(vod_id)
+        modules.HighLight.insert_first_highlight(new_highlight_id)
+        Thread(target=run_analysis, args=(vod_id, new_highlight_id, memo)).start()
 
-        # data = frequencyAlgo(vod_id)
-        # modules.HighLight.insert_highlight(vod_id, data)
-
-        return '', 204
+        data = {
+            'highlight_id': new_highlight_id,
+        }
+        return Response(dumps(data), mimetype='application/json')
     if request.method == 'GET':
         vod_id = request.values.get('vod_id')
         if vod_id:
@@ -59,7 +63,6 @@ def vod():
             data = modules.Vod.index()
 
         return Response(dumps(data), mimetype='application/json')
-
 
 @app.route('/api/vod/check', methods=['POST'])
 def check():
