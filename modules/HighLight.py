@@ -80,4 +80,4 @@ def get_new_highlight(vod_id):
     else:
         new_highlight = int(is_define['highlight_id'])
         new_highlight += 1
-        return new_highlight
+        return str(new_highlight)
