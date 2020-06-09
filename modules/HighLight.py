@@ -23,14 +23,14 @@ def insert_first_highlight(highlight_id, vod_id):
     data = {
         'highlight_id': highlight_id,
         'vod_id': vod_id,
-        'channel_id': None,
-        'streamerName': None,
-        'game': None,
-        'start_at': None,
-        'duration': None,
-        'youtube_url': None,
-        "avg_score": None,
-        'memo': None,
+        'channel_id': '',
+        'streamerName': '',
+        'game': '',
+        'start_at': '',
+        'duration': '',
+        'youtube_url': '',
+        "avg_score": '',
+        'memo': '',
     }
     collection.insert(data)
 
