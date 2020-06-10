@@ -41,7 +41,7 @@ def insert_highlight(vod_id, highlight_id, memo, data):
     collection = client.ClipFetcher.HighLight
     collection.update_one({'highlight_id': highlight_id}, {'$set':{
         'vod_id': vod_id,
-        'channel_id': data['channel_id'],
+        'channel_id': str(data['channel_id']),
         'streamerName': data['streamerName'],
         'game': data['game'],
         'start_at': data['start'],
