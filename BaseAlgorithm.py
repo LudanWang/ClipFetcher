@@ -5,7 +5,7 @@ from time import gmtime
 import statistics
 
 def frequencyAlgo(vod_id):#a秒內有b個留言
-    file_name = './ChatHistory/' + vod_id + ".json"
+    file_name = './ChatHistory/' + str(vod_id) + ".json"
     f = open(file_name, "r", encoding="utf-8")  # filename
     file_content_json = json.loads(f.read())
     title = file_content_json['title']
