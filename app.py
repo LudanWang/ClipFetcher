@@ -48,7 +48,7 @@ def vod():
         # if modules.Vod.check_vod(vod_id) is not None:
         # abort(400, description="vod_id 已分析過")
         new_highlight_id = modules.HighLight.get_new_highlight(vod_id)
-        modules.HighLight.insert_first_highlight(new_highlight_id, vod_id)
+        modules.HighLight.insert_first_highlight(new_highlight_id, vod_id, memo)
         Thread(target=run_analysis, args=(vod_id, new_highlight_id, memo)).start()
 
         data = {
