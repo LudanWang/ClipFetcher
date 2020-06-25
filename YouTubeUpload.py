@@ -5,31 +5,50 @@ import random
 import sys
 import time
 import argparse
-
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from apiclient.http import MediaFileUpload
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
-
+# py upload.py --title 598408072_1 --file 598408072_1.mp4
+# Explicitly tell the underlying HTTP transport library not to retry, since
+# we are handling retry logic ourselves.
 httplib2.RETRIES = 1
 
+# Maximum number of times to retry before giving up.
 MAX_RETRIES = 10
 
+# Always retry when these exceptions are raised.
 RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
                         httplib.IncompleteRead, httplib.ImproperConnectionState,
                         httplib.CannotSendRequest, httplib.CannotSendHeader,
                         httplib.ResponseNotReady, httplib.BadStatusLine)
 
+# Always retry when an apiclient.errors.HttpError with one of these status
+# codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
+# The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
+# the OAuth 2.0 information for this application, including its client_id and
+# client_secret. You can acquire an OAuth 2.0 client ID and client secret from
+# the Google API Console at
+# https://console.developers.google.com/.
+# Please ensure that you have enabled the YouTube Data API for your project.
+# For more information about using OAuth2 to access the YouTube Data API, see:
+#   https://developers.google.com/youtube/v3/guides/authentication
+# For more information about the client_secrets.json file format, see:
+#   https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 CLIENT_SECRETS_FILE = "client_secret_813278049069-ct94j40333ch9h687c12bhk312javef3.apps.googleusercontent.com.json"
 
+# This OAuth 2.0 access scope allows an application to upload files to the
+# authenticated user's YouTube channel, but doesn't allow other types of access.
 YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
+# This variable defines a message to display if the CLIENT_SECRETS_FILE is
+# missing.
 MISSING_CLIENT_SECRETS_MESSAGE = """
 WARNING: Please configure OAuth 2.0
 
@@ -47,6 +66,7 @@ https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
                                    CLIENT_SECRETS_FILE))
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
+
 
 def get_authenticated_service(args):
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
@@ -83,6 +103,17 @@ def initialize_upload(youtube, options):
     insert_request = youtube.videos().insert(
         part=",".join(body.keys()),
         body=body,
+        # The chunksize parameter specifies the size of each chunk of data, in
+        # bytes, that will be uploaded at a time. Set a higher value for
+        # reliable connections as fewer chunks lead to faster uploads. Set a lower
+        # value for better recovery on less reliable connections.
+        #
+        # Setting "chunksize" equal to -1 in the code below means that the entire
+        # file will be uploaded in a single HTTP request. (If the upload fails,
+        # it will still be retried where it left off.) This is usually a best
+        # practice, but if you're using Python older than 2.6 or if you're
+        # running on App Engine, you should set the chunksize to something like
+        # 1024 * 1024 (1 megabyte).
         media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
     )
 
@@ -131,7 +162,16 @@ def start_upload(file,title): #檔名 標題 回傳yt url
     parser.add_argument('--description')
     parser.add_argument('--category')
     parser.add_argument('--privacyStatus')
-    args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '', '--description', 'Test', '--category', '22', "--privacyStatus",VALID_PRIVACY_STATUSES[0]])
+    # parser.add_argument('--logging_level')
+    # parser.add_argument('--noauth_local_webserver')
+    # parser.add_argument('--auth_host_port')
+    # parser.add_argument('--auth_host_name')
+    # args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '','--auth_host_port','[8080, 8090]', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0],'--logging_level','ERROR', '--noauth_local_webserver', False])
+    args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0]])
+    # print(args)
+    if not os.path.exists(args.file):
+        exit("Please specify a valid file using the --file= parameter.")
+
     youtube = get_authenticated_service(args)
     try:
         youtube_url = initialize_upload(youtube, args)
@@ -140,5 +180,5 @@ def start_upload(file,title): #檔名 標題 回傳yt url
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
     # arg = Namespace(auth_host_name='localhost', auth_host_port=[8080, 8090], category='22', description='Test Description', file='598408072_1.mp4', keywords='', logging_level='ERROR', noauth_local_webserver=False, privacyStatus='public', title='598408072_2')
 
-# url = start_upload('598408072_1.mp4','598408072_3')
+# url = start_upload('639129658_0.mp4','639129658_0')
 # print(url)
