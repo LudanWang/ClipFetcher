@@ -1,53 +1,57 @@
 import requests
-import json
 import urllib.request
-import BaseAlgorithm
 import subprocess
 import os
 
-def getM3U8(vod_id):
+def GetM3U8(vod_id):
     url = "https://api.twitch.tv/api/vods/"+vod_id+"/access_token"
     headers = {
          "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
     }
     response = requests.get(url, headers=headers).json()
-    print(response)
-    token=response['token']
-    sig=response['sig']
-    print(token)
-    print(sig)
-    m3u8url="https://usher.twitch.tv/vod/"+vod_id+"?nauthsig="+sig+"&nauth="+token
-    u="https://usher.ttvnw.net/vod/"+vod_id+".m3u8?player=twitchweb&nauthsig="+sig+"&nauth="+token+"&allow_audio_only=true&allow_source=true&type=any&p=123"
-    print(u)
-    response3 = urllib.request.urlopen(u)
+    token = response['token']
+    sig = response['sig']
+
+    m3u8url = "https://usher.twitch.tv/vod/"+vod_id+"?nauthsig="+sig+"&nauth="+token
+    # query = "https://usher.ttvnw.net/vod/"+vod_id+".m3u8?player=twitchweb&nauthsig="+sig+"&nauth="+token+"&allow_audio_only=true&allow_source=true&type=any&p=123"
+    query = "https://usher.ttvnw.net/vod/"+vod_id+".m3u8?player=twitchweb&nauthsig="+sig+"&nauth="+token+"&allow_source=true&type=any&p=123"
+    response3 = urllib.request.urlopen(query)
     data = response3.read()  # a `bytes` object
     text = data.decode('utf-8')
-    output = []
+    download_url = []
     for item in text.split("\n"):
         if "https:" in item:
-            output.append(item.strip())
-    print(output)#url list
-    print(type(output))
-    return output
+            download_url.append(item.strip())
+    for res in download_url:
+        print(res.split('/')[-2])
+    return download_url
 
-def ffmpegDownload(vod_id,timeStamp):
-    newpath = r'C:\Users\yan\Desktop\\' + vod_id  #新增vod_id資料夾
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
-    downloadURL=getM3U8(vod_id)
-    print(downloadURL[0])
-    vodPath='C:\\Users\\yan\\Desktop\\'+vod_id
-    mp4name=vod_id
-    for i in range(len(timeStamp[0])):#len(timeStamp[0])
-        cmd='ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ timeStamp[0][i]+' -i '+downloadURL[2]+' -c copy -t '+timeStamp[1][i]+' '+vodPath+'\\'+mp4name+'_'+ str(i) +'.mp4'
-        print(cmd)
+def FFMPEGDownload(vod_id, start, duration, highlight_id):
+    vod_folder = r'./' + vod_id  #新增vod_id資料夾
+    print(vod_folder)
+    if not os.path.exists(vod_folder):
+        os.makedirs(vod_folder)
+    download_url = GetM3U8(vod_id)
+    mp4_name = vod_id + '_' + str(highlight_id)
+    # print(mp4_name)
+    for i in range(len(start)):
+        cmd = 'ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' '+vod_folder+'\\'+ mp4_name + '_' + str(i) +'.mp4'
         subprocess.run(cmd)
 
-def ffmpegCombine(vod_id,clipCount):
-    vodPath = 'C:\\Users\\yan\\Desktop\\' + vod_id
+def FFMPEGCombine(vod_id, clip_count, highlight_id):
+    vod_folder = './' + vod_id
     cmd = 'ffmpeg'
-    for i in range(0,clipCount):
-        cmd=cmd+' -i '+vodPath+'\\'+vod_id+'_'+str(i)+".mp4"
-        print(cmd)
-    cmd = cmd +" -filter_complex concat=n="+str(clipCount)+":v=1:a=1 -y "+vodPath+"\\"+vod_id+".mp4"
+    for i in range(0,clip_count):
+        cmd = cmd + ' -i ' + vod_folder + '/' + vod_id + '_' + str(highlight_id) + '_' + str(i) + ".mp4"
+    cmd = cmd +" -vsync 2 -filter_complex concat=n=" + str(clip_count) + ":v=1:a=1 -y " + vod_folder + "\\" + vod_id + '_' + str(highlight_id) + ".mp4"
+    subprocess.run(cmd)
+
+def FFMPEGDownloadFull(vod_id):
+    vod_folder = r'./' + vod_id
+    if not os.path.exists(vod_folder):
+        os.makedirs(vod_folder)
+    download_url = GetM3U8(vod_id)
+    vodPath = 'C:\\Users\\yan\\Desktop\\'+vod_id
+    mp4name = vod_id
+    cmd='ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -i '+ download_url[-3]+' -c copy '+vodPath+'\\'+mp4name+'.mp4'
     subprocess.run(cmd)
