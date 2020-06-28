@@ -56,14 +56,9 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
             freq2Start.append(freq2Time[i] - 7)
             freq2End.append(freq2Time[i] + 2)
             i += 1
-    # print('開始時間',freq2Start)
-    # print('結束時間',freq2End)
     #找尋精華片段 開始及時間點
     tempStart=[]
     tempEnd=[]
-    # print('97',freq3Time)
-    # print('95S',freq2Start)
-    # print('95E',freq2End)
 
     for i in range(len(freq2Start)-1):
         for j in range(len(freq3Time)-1):
@@ -80,9 +75,6 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
     for i in range(len(tempStart)):
          tempduration.append(tempEnd[i] - tempStart[i]+1)
 
-
-    # print(max(freqCount))
-        # print('freq',freqCount.sort(reverse=True))
     totalClipLength = 0
     while totalClipLength < 600: #找大於 > 10分鐘
         totalClipLength = 0
@@ -106,9 +98,8 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
         # print('精華數:', len(tempStart),'選取包含最大頻率的片段數:',len(topFreqClipIndex))
         nTopFreqClipIndex = list(set(topFreqClipIndex))#set出來是tuple 多個n轉成list
         nTopFreqClipIndex.sort()
-        # print(nTopFreqClipIndex)
-        # print('t',nTopFreqClipIndex)
-         #如果精華不夠長，將最大頻率減1，找>=小1聊天聊天頻率的精華
+
+        #如果精華不夠長，將最大頻率減1，找>=小1聊天聊天頻率的精華
         for i in range(len(nTopFreqClipIndex)):
             totalClipLength += tempduration[nTopFreqClipIndex[i]]
         # print(totalClipLength)
@@ -135,6 +126,6 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
 def run_ClipFetcher(data, vod_id, highlight_id):
     FFMPEGDownload(str(vod_id), data['start'], data['duration'], str(highlight_id))
     FFMPEGCombine(str(vod_id), len(data['start']), str(highlight_id))
-    clip_file = './' + vod_id + '/' + vod_id + '_' + highlight_id + '.mp4'
-    yt_title = vod_id + '_' + highlight_id
+    clip_file = './' + vod_id + '/' + highlight_id + '.mp4'
+    yt_title = highlight_id
     modules.HighLight.update_highlight_youtube(highlight_id, start_upload(clip_file, yt_title))
