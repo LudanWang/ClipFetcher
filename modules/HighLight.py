@@ -85,6 +85,6 @@ def get_new_highlight(vod_id):
         return 'ClipFetcher_' + vod_id + '001'
     else:
         is_define = collection.find_one({'vod_id': vod_id}, sort=[('highlight_id', -1)])
-        new_highlight = int(is_define['highlight_id'])
+        new_highlight = int(is_define['highlight_id'].split('_')[1])
         new_highlight += 1
         return 'ClipFetcher_' + str(new_highlight)
