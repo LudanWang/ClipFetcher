@@ -171,10 +171,11 @@ def start_upload(file,title): #檔名 標題 回傳yt url
     # print(args)
     if not os.path.exists(args.file):
         exit("Please specify a valid file using the --file= parameter.")
-
+        
     youtube = get_authenticated_service(args)
     try:
         youtube_url = initialize_upload(youtube, args)
+        # print(youtube_url)
         return youtube_url
     except HttpError as e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

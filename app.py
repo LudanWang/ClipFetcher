@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, abort, Response
 from flask_restful import Api
 from bson.json_util import dumps
 from ChatCrawler import getVodInformation
-from BaseAlgorithm import frequencyAlgo
+from BaseAlgorithm import frequencyAlgo, run_ClipFetcher
 from flask_cors import CORS
 from threading import Thread
 
@@ -24,6 +24,7 @@ def run_analysis(vod_id, new_highlight_id, memo):
     print("status: 2")
     modules.HighLight.insert_highlight(vod_id, new_highlight_id, memo, data)
     print("status: 3")
+    run_ClipFetcher(data, vod_id, new_highlight_id)
 
 
 # sys.path.append("modules")
@@ -32,7 +33,6 @@ def run_analysis(vod_id, new_highlight_id, memo):
 @app.route('/')
 def home():
     return "Hello world"
-
 
 # Vod
 @app.route('/api/vod', methods=['GET', 'POST'])
@@ -51,10 +51,10 @@ def vod():
         modules.HighLight.insert_first_highlight(new_highlight_id, vod_id, memo)
         Thread(target=run_analysis, args=(vod_id, new_highlight_id, memo)).start()
 
-        data = {
+        response = {
             'highlight_id': new_highlight_id,
         }
-        return Response(dumps(data), mimetype='application/json')
+        return Response(dumps(response), mimetype='application/json')
     if request.method == 'GET':
         vod_id = request.values.get('vod_id')
         if vod_id:
