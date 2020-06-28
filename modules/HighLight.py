@@ -46,13 +46,20 @@ def insert_highlight(vod_id, highlight_id, memo, data):
         'game': data['game'],
         'start_at': data['start'],
         'duration': data['duration'],
-        'youtube_url': 'https://youtu.be/frguLOUro2E',
+        'youtube_url': '',
         "avg_score": 0
         }
     })
 
     return
 
+def update_highlight_youtube(highlight_id, youtube_url):
+    client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
+    collection = client.ClipFetcher.HighLight
+    collection.update_one({'highlight_id': highlight_id}, {'$set':{
+            'youtube_url': youtube_url
+        }
+    })
 def update_avg_score(highlight_id, score):
     client = pymongo.MongoClient(os.environ['MONGODB_KEY'])
     collection = client.ClipFetcher.HighLight
@@ -78,6 +85,6 @@ def get_new_highlight(vod_id):
         return 'ClipFetcher_' + vod_id + '001'
     else:
         is_define = collection.find_one({'vod_id': vod_id}, sort=[('highlight_id', -1)])
-        new_highlight = int(is_define['highlight_id'])
+        new_highlight = int(is_define['highlight_id'].split('_')[1])
         new_highlight += 1
         return 'ClipFetcher_' + str(new_highlight)
