@@ -18,7 +18,7 @@ CORS(app)
 
 def run_analysis(vod_id, new_highlight_id, memo):
     print("status: 0")
-    getVodInformation(vod_id)
+    # getVodInformation(vod_id)
     print("status: 1")
     data = frequencyAlgo(vod_id)
     print("status: 2")
