@@ -31,7 +31,7 @@ def FFMPEGDownload(vod_id, start, duration, highlight_id):
     download_url = GetM3U8(vod_id)
     for i in range(len(start)):
         cmd = '/app/vendor/ffmpeg/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' -bsf:a aac_adtstoasc '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
-        subprocess.run(cmd, shell=true)
+        subprocess.run(cmd, shell=True)
 
 def FFMPEGCombine(vod_id, clip_count, highlight_id):
     vod_folder = './Vod'
@@ -39,7 +39,7 @@ def FFMPEGCombine(vod_id, clip_count, highlight_id):
     for i in range(0,clip_count):
         cmd = cmd + ' -i ' + vod_folder + '/' + highlight_id + '_' + str(i) + ".mp4"
     cmd = cmd +" -vsync 2 -filter_complex concat=n=" + str(clip_count) + ":v=1:a=1 -y " + vod_folder + "/" + highlight_id + ".mp4"
-    subprocess.run(cmd, shell=true)
+    subprocess.run(cmd, shell=True)
 
 def FFMPEGDownloadFull(vod_id):
     vod_folder = r'./' + vod_id
