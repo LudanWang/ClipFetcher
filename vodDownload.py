@@ -30,7 +30,7 @@ def FFMPEGDownload(vod_id, start, duration, highlight_id):
     vod_folder = './Vod'  #新增vod_id資料夾
     download_url = GetM3U8(vod_id)
     for i in range(len(start)):
-        cmd = '/app/vendor/ffmpeg/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
+        cmd = '/app/vendor/ffmpeg/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' -bsf:a aac_adtstoasc '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
         subprocess.run(cmd)
 
 def FFMPEGCombine(vod_id, clip_count, highlight_id):
