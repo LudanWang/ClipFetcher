@@ -128,7 +128,7 @@ def run_ClipFetcher(data, vod_id, highlight_id):
     FFMPEGDownload(str(vod_id), data['start'], data['duration'], str(highlight_id))
     print('status: 5')
     FFMPEGCombine(str(vod_id), len(data['start']), str(highlight_id))
-    clip_file = './' + vod_id + '/' + highlight_id + '.mp4'
+    clip_file = './Vod/' + highlight_id + '.mp4'
     yt_title = highlight_id
     print('status: 6')
     modules.HighLight.update_highlight_youtube(highlight_id, start_upload(clip_file, yt_title))
