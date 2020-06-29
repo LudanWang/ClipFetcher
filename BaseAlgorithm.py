@@ -124,12 +124,12 @@ def frequencyAlgo(vod_id):#a秒內有b個留言
     return data
 
 def run_ClipFetcher(data, vod_id, highlight_id):
-    print('4')
+    print('status: 4')
     FFMPEGDownload(str(vod_id), data['start'], data['duration'], str(highlight_id))
-    print('5')
+    print('status: 5')
     FFMPEGCombine(str(vod_id), len(data['start']), str(highlight_id))
     clip_file = './' + vod_id + '/' + highlight_id + '.mp4'
     yt_title = highlight_id
-    print('6')
+    print('status: 6')
     modules.HighLight.update_highlight_youtube(highlight_id, start_upload(clip_file, yt_title))
-    print('7')
+    print('status: 7')
