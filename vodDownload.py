@@ -30,11 +30,17 @@ def FFMPEGDownload(vod_id, start, duration, highlight_id):
     vod_folder = './Vod'  #新增vod_id資料夾
     download_url = GetM3U8(vod_id)
     for i in range(len(start)):
+        # mac 用
+        # cmd = '/usr/local/bin/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' -bsf:a aac_adtstoasc '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
+        # heroku 用
         cmd = '/app/vendor/ffmpeg/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' -bsf:a aac_adtstoasc '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
         subprocess.run(cmd, shell=True)
 
 def FFMPEGCombine(vod_id, clip_count, highlight_id):
     vod_folder = './Vod'
+    # mac 用
+    # cmd = '/usr/local/bin/ffmpeg'
+    # heroku 用
     cmd = '/app/vendor/ffmpeg/ffmpeg'
     for i in range(0,clip_count):
         cmd = cmd + ' -i ' + vod_folder + '/' + highlight_id + '_' + str(i) + ".mp4"
