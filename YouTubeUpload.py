@@ -169,7 +169,7 @@ def start_upload(file,title): #檔名 標題 回傳yt url
     # args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '','--auth_host_port','[8080, 8090]', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0],'--logging_level','ERROR', '--noauth_local_webserver', False])
     print('status: 7')
     args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0]])
-    print('args: ' + args)
+    # print('args: ' + args)
     if not os.path.exists(args.file):
         exit("Please specify a valid file using the --file= parameter.")
     print('status: 8')
