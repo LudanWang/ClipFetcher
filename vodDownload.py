@@ -27,17 +27,14 @@ def GetM3U8(vod_id):
     return download_url
 
 def FFMPEGDownload(vod_id, start, duration, highlight_id):
-    vod_folder = r'./' + vod_id  #新增vod_id資料夾
-    print(vod_folder)
-    if not os.path.exists(vod_folder):
-        os.makedirs(vod_folder)
+    vod_folder = './Vod'  #新增vod_id資料夾
     download_url = GetM3U8(vod_id)
     for i in range(len(start)):
         cmd = '/app/vendor/ffmpeg/ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -ss '+ start[i] +' -i '+download_url[-3]+' -c copy -t '+ duration[i] +' '+vod_folder+'/'+ highlight_id + '_' + str(i) +'.mp4'
         subprocess.run(cmd)
 
 def FFMPEGCombine(vod_id, clip_count, highlight_id):
-    vod_folder = './' + vod_id
+    vod_folder = './Vod'
     cmd = '/app/vendor/ffmpeg/ffmpeg'
     for i in range(0,clip_count):
         cmd = cmd + ' -i ' + vod_folder + '/' + highlight_id + '_' + str(i) + ".mp4"
@@ -49,7 +46,7 @@ def FFMPEGDownloadFull(vod_id):
     if not os.path.exists(vod_folder):
         os.makedirs(vod_folder)
     download_url = GetM3U8(vod_id)
-    vodPath = 'C:\\Users\\yan\\Desktop\\'+vod_id
+    vodPath = './'+vod_id
     mp4name = vod_id
     cmd='ffmpeg -protocol_whitelist "file,http,https,tcp,tls" -y -i '+ download_url[-3]+' -c copy '+vodPath+'\\'+mp4name+'.mp4'
     subprocess.run(cmd)
