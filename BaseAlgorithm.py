@@ -132,4 +132,4 @@ def run_ClipFetcher(data, vod_id, highlight_id):
     yt_title = highlight_id
     print('status: 6')
     modules.HighLight.update_highlight_youtube(highlight_id, start_upload(clip_file, yt_title))
-    print('status: 7')
+    print('status: 11')
