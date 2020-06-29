@@ -167,15 +167,18 @@ def start_upload(file,title): #檔名 標題 回傳yt url
     # parser.add_argument('--auth_host_port')
     # parser.add_argument('--auth_host_name')
     # args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '','--auth_host_port','[8080, 8090]', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0],'--logging_level','ERROR', '--noauth_local_webserver', False])
+    print('status: 7')
     args = parser.parse_args(args=['--file', file, '--title', title, '--keywords', '', '--description', 'Test', '--category', '22', "--privacyStatus", VALID_PRIVACY_STATUSES[0]])
     # print(args)
     if not os.path.exists(args.file):
         exit("Please specify a valid file using the --file= parameter.")
-        
+    print('status: 8')
     youtube = get_authenticated_service(args)
+    print('status: 9')
     try:
         youtube_url = initialize_upload(youtube, args)
         # print(youtube_url)
+        print('status: 10')
         return youtube_url
     except HttpError as e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
